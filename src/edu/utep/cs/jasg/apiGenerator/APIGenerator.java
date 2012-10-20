@@ -175,8 +175,8 @@ public class APIGenerator {
 		System.out.println("File " + "xml"+File.separator+fileName+".xml" + " created");
 	}
 	
-	/** Creates and HTML file based on the XSL and XML files, using a DOM transformer */
-    public void executeXSL() {
+	/** Creates a HTML file based on the XSL and XML files, using a DOM transformer */
+    	public void executeXSL() {
 		try {
 			TransformerFactory tFactory = TransformerFactory.newInstance();
             // Make the input sources for the XML and XSLT documents
