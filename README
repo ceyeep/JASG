@@ -1,1 +1,12 @@
-Hello World!
+JASG - Readme
+
+LICENSING
+
+The JASG framework code is covered by the BSD license.
+
+The included tools are covered by their individual licenses (see licenses folder):
+JastAddJ (BSD licencse)
+JastAdd (BSD license)
+jflex (lexer generator) (GPL license)
+beaver (parser generator) (BSD license)
+junit (testing tool) (Common Public License)
