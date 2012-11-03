@@ -18,6 +18,8 @@ import java.util.*;
 
 public class MainFileFactory {
 	private static Scanner input = new Scanner(System.in);
+	private static final String CUSTOM_PATH = "custom";
+	
 	/** Create main JastAdd framework files */
 	public static void main(String[] args) {
 
@@ -70,7 +72,63 @@ public class MainFileFactory {
 		input.close();
 		
 	}
+	
+	/** Create a file from a file template depending on extension */
+	public void createFile(String path, String fileName, String extension)
+	{
+		System.out.println("Select file name: (-1 to cancel)");
 
+    		
+    	//Check if current file exists
+    	
+    	File file = new File(CUSTOM_PATH+File.separator+path+File.separator+fileName+"."+extension);  
+
+    	
+    	//Create new file
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//Write file depending on selected type of document
+		try{
+			  // Create file writer
+			  FileWriter fstream = new FileWriter(file);
+			  BufferedWriter out = new BufferedWriter(fstream);
+			  
+				switch (extension) {
+	            case "parser":
+	            	out.write(new ParserGenerator().generateParser());
+	            	break;
+	                 
+	            case "flex":  
+	            	out.write(new ScannerGenerator().generateScanner());
+	            	break;
+	            	
+	            case "ast":  
+	            	out.write(new ASTGenerator().generateAST());
+	            	break;
+	            	
+	            case "jrag":  
+	            	out.write(new AspectGenerator(fileName).generateAspect());
+	            	break;
+	           
+	            default: System.out.println("invalid extension");
+	            	break;
+				}
+			  
+			  //Close the output stream
+			  out.close();
+			  }catch (Exception e){//Catch exception if any
+			  System.err.println("Error: " + e.getMessage());
+		}
+		
+		System.out.println("File has been created: " + file.getAbsolutePath());
+
+	}
+
+	//TODO: add path to craete file
 	/** Create a file from a file template depending on extension */
 	public void createFile(String extension)
 	{
@@ -81,13 +139,13 @@ public class MainFileFactory {
     		
     	//Check if current file exists
     	
-    	File file = new File("custom"+File.separator+fileName+"."+extension);  
+    	File file = new File(CUSTOM_PATH+File.separator+fileName+"."+extension);  
     	while(file.exists()){
         	System.out.println("file already exists, please select a new name (-1 to cancel): ");
         	fileName = input.nextLine();
         	if(fileName.equals("-1"))
         		return;
-        	file = new File("custom"+File.separator+fileName+"."+extension);
+        	file = new File(CUSTOM_PATH+File.separator+fileName+"."+extension);
 		}
     	
     	//Create new file
