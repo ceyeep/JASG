@@ -11,8 +11,6 @@
  ******************************************************************************/
 package edu.utep.cs.jasg.xmlParser;
 
-import java.io.File;
-
 /** Main class that process a JASG XML spec file */
 public class MainXMLParser {
 
@@ -22,6 +20,7 @@ public class MainXMLParser {
 		//MainXMLParser mainXmlParser = new MainXMLParser();
 		//mainXmlParser.createDirectory("test");
 		XMLParser xmlParser = new XMLParser();
+		xmlParser.parse(args[0]);
 	}
 	
 }
