@@ -13,16 +13,9 @@ package edu.utep.cs.jasg.fileGenerator;
 /** Generates a new aspect from given user rules */
 public class AspectGenerator {
 	
+	//TODO: need to create header and food
 	private String name = "Aspect";
 	private StringBuffer AspectTemplate = new StringBuffer();
-	private final String contentTemplate = 
-	"aspect " + name + "{\n" +
-	"//public void StateMachine.printStateType() {\n" +
-	"//for (Declaration d : getDeclarations()){\n" +
-	"//d.printStateType();\n " +
-	"//}\n" +
-	"//}\n" +
-	"}";
 	
 	public AspectGenerator(String name){
 		this.name = name;
@@ -31,8 +24,18 @@ public class AspectGenerator {
 	/** Generates aspect template */
 	public String generateAspect()
 	{
-		AspectTemplate.append(contentTemplate); 
-		
+		AspectTemplate.append(getTemplateString(name)); 
 		return AspectTemplate.toString();
+	}
+	
+	/** Return Asepct template string. */
+	private String getTemplateString(String name){
+		return  "aspect " + name + "{\n" +
+				"\t//public void StateMachine.printStateType() {\n" +
+				"\t\t//for (Declaration d : getDeclarations()){\n" +
+				"\t\t\t//d.printStateType();\n " +
+				"\t\t//}\n" +
+				"\t//}\n" +
+				"}";
 	}
 }

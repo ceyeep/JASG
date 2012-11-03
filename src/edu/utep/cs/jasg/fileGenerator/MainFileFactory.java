@@ -18,6 +18,7 @@ import java.util.*;
 
 public class MainFileFactory {
 	private static Scanner input = new Scanner(System.in);
+	//TODO: Consider creating a cutomizable custom path
 	private static final String CUSTOM_PATH = "custom";
 	
 	/** Create main JastAdd framework files */
@@ -76,14 +77,11 @@ public class MainFileFactory {
 	/** Create a file from a file template depending on extension */
 	public void createFile(String path, String fileName, String extension)
 	{
-		System.out.println("Select file name: (-1 to cancel)");
-
-    		
+   		
     	//Check if current file exists
     	
     	File file = new File(CUSTOM_PATH+File.separator+path+File.separator+fileName+"."+extension);  
 
-    	
     	//Create new file
 		try {
 			file.createNewFile();
@@ -190,6 +188,22 @@ public class MainFileFactory {
 		
 		System.out.println("File has been created: " + file.getAbsolutePath());
 
+	}
+	
+	/** Create a new directory with the specified name. */
+	public void createDirectory(String name){
+		try{
+			String path = CUSTOM_PATH + File.separator+ name;
+
+			// Create one directory
+			boolean success = (new File(path)).mkdirs();
+			if (success) {
+				System.out.println("Directory: " + path + " created");
+			}  
+
+		}catch (Exception e){//Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+		}
 	}
 
 }
