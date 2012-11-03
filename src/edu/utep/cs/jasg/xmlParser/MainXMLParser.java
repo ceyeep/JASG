@@ -19,24 +19,9 @@ public class MainXMLParser {
 	public static void main(String[] args){
 		System.out.println("Parsing JASG file");
 		
-		MainXMLParser xmlParser = new MainXMLParser();
-		xmlParser.createDirectory("test");
-
+		//MainXMLParser mainXmlParser = new MainXMLParser();
+		//mainXmlParser.createDirectory("test");
+		XMLParser xmlParser = new XMLParser();
 	}
 	
-	/** Create a new directory with specified name. */
-	private void createDirectory(String name){
-		try{
-			String path ="custom/"+ name;
-
-			// Create one directory
-			boolean success = (new File(path)).mkdirs();
-			if (success) {
-				System.out.println("Directory: " + path + " created");
-			}  
-
-		}catch (Exception e){//Catch exception if any
-			System.err.println("Error: " + e.getMessage());
-		}
-	}
 }
