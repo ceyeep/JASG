@@ -9,7 +9,7 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.ruleGenerator;
+package edu.utep.cs.jasg.specificationGenerator.ruleGenerator;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,0 +1,43 @@
+<!--
+# Copyright (c) 2012 Cesar Yeep.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the BSD 3-Clause License
+# ("New BSD" or "BSD Simplified") which accompanies this distribution,
+# and is available at
+# http://opensource.org/licenses/BSD-3-Clause
+# 
+# Contributors:
+#     Cesar Yeep - initial API and implementation
+-->
+<!ELEMENT jasg (nameSpace?,parser?,scanner?,ASTNodes?,ASTBehavior?)>
+
+<!ELEMENT parser (fileName?,parserType?,parserRule*)>
+<!ELEMENT scanner (fileName?,scannerElement*)>
+<!ELEMENT ASTNodes (fileName?,ASTNodeElement*)>
+<!ELEMENT ASTBehavior (fileName?,ASTBehaviorElement*)>
+
+<!ELEMENT nameSpace (#PCDATA)>
+<!ELEMENT fileName (#PCDATA)>
+<!ELEMENT parserType (#PCDATA)>
+
+<!-- Parser element (pe) -->
+
+<!ELEMENT parserRule (pe_idUse?, pe_idDecl, pe_definition)>
+<!ELEMENT pe_definition (pe_element*, pe_code?)>
+<!ELEMENT pe_element (pe_idUse, pe_name?)>
+<!ELEMENT pe_name (#PCDATA)>
+<!ELEMENT pe_idDecl (#PCDATA)>
+<!ELEMENT pe_idUse (#PCDATA)>
+<!ELEMENT pe_code (#PCDATA)>
+
+<!-- Scanner element (se) -->
+
+<!ELEMENT scannerElement (#PCDATA)>
+
+<!-- AST node element (astn) -->
+
+<!ELEMENT ASTNodeElement (#PCDATA)>
+
+<!-- AST behavior element (astb) -->
+
+<!ELEMENT ASTBehaviorElement (#PCDATA)>

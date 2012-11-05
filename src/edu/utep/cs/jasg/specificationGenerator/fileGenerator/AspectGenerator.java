@@ -9,7 +9,7 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.fileGenerator;
+package edu.utep.cs.jasg.specificationGenerator.fileGenerator;
 /** Generates a new aspect from given user rules */
 public class AspectGenerator {
 	

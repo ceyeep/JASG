@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2012 Cesar Yeep.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the BSD 3-Clause License
+  ("New BSD" or "BSD Simplified") which accompanies this distribution,
+  and is available at
+  http://opensource.org/licenses/BSD-3-Clause
+  
+  Contributors:
+      Cesar Yeep - initial API and implementation
+-->
+<!DOCTYPE jasg SYSTEM "jasg.dtd">
+
+<jasg>
+	<nameSpace>Feature1</nameSpace>
+		<parser>
+
+		</parser>
+		<ASTNodes>
+			<ASTNodeElement>
+				Node 1
+			</ASTNodeElement>
+		</ASTNodes>
+		<ASTBehavior>
+			<ASTBehaviorElement>
+				Aspect 1
+			</ASTBehaviorElement>
+		</ASTBehavior>
+</jasg>
+

@@ -9,7 +9,7 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.xmlParser;
+package edu.utep.cs.jasg.specificationGenerator;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +21,15 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-import edu.utep.cs.jasg.fileGenerator.MainFileFactory;
+import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentFactory;
+import edu.utep.cs.jasg.specificationGenerator.documentGenerator.ParserDocumentFactory;
+import edu.utep.cs.jasg.specificationGenerator.fileGenerator.FileFactory;
 
 public class XMLParser {
 
 	private String nameSpace = "";
-	private MainFileFactory fileFactory = new MainFileFactory();
+	private FileFactory fileFactory = new FileFactory();
+	private DocumentFactory documentFactory;
 
 	//Main method for testing purposes only
 	public static void main(String[] args) {
@@ -60,8 +63,6 @@ public class XMLParser {
 
 			//get AST behavior declarations
 			List<Element> ASTBehaviorElements = root.getChildren("ASTBehavior");
-
-
 
 			//parse parser elements
 			if(parserElements != null)
@@ -97,12 +98,13 @@ public class XMLParser {
 	private void parseParserElements(List<Element> parserElements){
 		System.out.println("Parsing parser elements");
 		
-		//Call parser rule generator (Create document)
+		//Call Document factory
+		documentFactory = new DocumentFactory();
+		
+		//Call Doc factory
 		
 		//Create a new parser file based on created rules
 		
-		//TODO: file factory should work with DOC objects, 
-		//for example a document that contains created rules as objects
 		fileFactory.createFile(nameSpace, nameSpace, "parser");
 
 	}

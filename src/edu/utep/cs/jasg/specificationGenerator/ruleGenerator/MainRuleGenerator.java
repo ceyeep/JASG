@@ -9,11 +9,11 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.ruleGenerator;
+package edu.utep.cs.jasg.specificationGenerator.ruleGenerator;
 
 import java.util.Scanner;
 
-import edu.utep.cs.jasg.fileGenerator.MainFileFactory;
+import edu.utep.cs.jasg.specificationGenerator.fileGenerator.FileFactory;
 
 /** Main class for building new language constructs */
 public class MainRuleGenerator {
@@ -60,7 +60,7 @@ public class MainRuleGenerator {
 			 *	- check if rule is valid (need to run JastAdd tool)
 			 */
             case "0":
-            	MainFileFactory mainFileFactory = new MainFileFactory();
+            	FileFactory mainFileFactory = new FileFactory();
             	mainFileFactory.createFile("ast");
             	break;
 

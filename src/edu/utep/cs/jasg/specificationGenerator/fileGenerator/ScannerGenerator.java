@@ -9,18 +9,18 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.fileGenerator;
-/** Generates a new Beaver parser from given user rules */
-public class ParserGenerator {
+package edu.utep.cs.jasg.specificationGenerator.fileGenerator;
+/** Generates a new scanner from given user rules */
+public class ScannerGenerator {
 	
-	private StringBuffer parserTemplate = new StringBuffer();
+	private StringBuffer scannerTemplate = new StringBuffer();
 	
 	
-	/** Generates parser template */
-	public String generateParser()
+	/** Generates scanner template */
+	public String generateScanner()
 	{
-		parserTemplate.append(""); 
+		scannerTemplate.append(""); 
 		
-		return parserTemplate.toString();
+		return scannerTemplate.toString();
 	}
 }

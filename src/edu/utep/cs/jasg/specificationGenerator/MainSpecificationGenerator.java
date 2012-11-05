@@ -9,10 +9,10 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.xmlParser;
+package edu.utep.cs.jasg.specificationGenerator;
 
 /** Main class that process a JASG XML spec file */
-public class MainXMLParser {
+public class MainSpecificationGenerator {
 
 	public static void main(String[] args){
 		System.out.println("Parsing JASG file");

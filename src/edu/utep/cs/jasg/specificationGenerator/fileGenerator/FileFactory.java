@@ -9,14 +9,14 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.fileGenerator;
+package edu.utep.cs.jasg.specificationGenerator.fileGenerator;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class MainFileFactory {
+public class FileFactory {
 	private static Scanner input = new Scanner(System.in);
 	//TODO: Consider creating a cutomizable custom path
 	private static final String CUSTOM_PATH = "custom";
@@ -24,7 +24,7 @@ public class MainFileFactory {
 	/** Create main JastAdd framework files */
 	public static void main(String[] args) {
 
-		MainFileFactory mainFactory = new MainFileFactory();
+		FileFactory mainFactory = new FileFactory();
 		
 		String option = "";
 		while(!option.equals("6"))
