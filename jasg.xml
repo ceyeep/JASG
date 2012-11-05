@@ -15,7 +15,7 @@
 <jasg>
 	<nameSpace>Feature1</nameSpace>
 		<parser>
-
+			<template>beaver</template>
 		</parser>
 		<ASTNodes>
 			<ASTNodeElement>

@@ -11,14 +11,14 @@
 -->
 <!ELEMENT jasg (nameSpace?,parser?,scanner?,ASTNodes?,ASTBehavior?)>
 
-<!ELEMENT parser (fileName?,parserType?,parserRule*)>
+<!ELEMENT parser (fileName?,template,parserRule*)>
 <!ELEMENT scanner (fileName?,scannerElement*)>
 <!ELEMENT ASTNodes (fileName?,ASTNodeElement*)>
 <!ELEMENT ASTBehavior (fileName?,ASTBehaviorElement*)>
 
 <!ELEMENT nameSpace (#PCDATA)>
 <!ELEMENT fileName (#PCDATA)>
-<!ELEMENT parserType (#PCDATA)>
+<!ELEMENT template (#PCDATA)>
 
 <!-- Parser element (pe) -->
 

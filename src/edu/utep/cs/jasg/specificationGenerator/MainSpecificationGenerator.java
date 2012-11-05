@@ -17,8 +17,6 @@ public class MainSpecificationGenerator {
 	public static void main(String[] args){
 		System.out.println("Parsing JASG file");
 		
-		//MainXMLParser mainXmlParser = new MainXMLParser();
-		//mainXmlParser.createDirectory("test");
 		XMLParser xmlParser = new XMLParser();
 		xmlParser.parse(args[0]);
 	}

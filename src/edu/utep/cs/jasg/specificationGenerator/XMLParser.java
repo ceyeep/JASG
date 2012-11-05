@@ -22,7 +22,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
 import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentFactory;
-import edu.utep.cs.jasg.specificationGenerator.documentGenerator.ParserDocumentFactory;
+import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentGeneratorException;
 import edu.utep.cs.jasg.specificationGenerator.fileGenerator.FileFactory;
 
 public class XMLParser {
@@ -99,9 +99,21 @@ public class XMLParser {
 		System.out.println("Parsing parser elements");
 		
 		//Call Document factory
+		
+		//Create a factory based on document type
 		documentFactory = new DocumentFactory();
 		
-		//Call Doc factory
+		//TODO: modify implementation
+		//Create document
+		Element template = parserElements.get(0);
+		Element elementList = parserElements.get(1);
+		
+		try {
+			StringBuffer documentBuffer = documentFactory.createDocument("parser", template.getText(), elementList);
+		} catch (DocumentGeneratorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//Create a new parser file based on created rules
 		

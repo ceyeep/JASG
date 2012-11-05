@@ -11,16 +11,12 @@
  ******************************************************************************/
 package edu.utep.cs.jasg.specificationGenerator.documentGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import org.jdom2.Element;
-
-/** Creates a parser document. */ 
+/** Interface to define parser document operatoins. */ 
 public interface ParserDocumentFactory {
-	
 
-	
+	public StringBuffer generateDocument();
+
 
 }
 
