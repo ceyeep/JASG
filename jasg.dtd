@@ -11,7 +11,7 @@
 -->
 <!ELEMENT jasg (nameSpace?,parser?,scanner?,ASTNodes?,ASTBehavior?)>
 
-<!ELEMENT parser (fileName?,template,parserRule*)>
+<!ELEMENT parser (fileName?,template,parserRules?)>
 <!ELEMENT scanner (fileName?,scannerElement*)>
 <!ELEMENT ASTNodes (fileName?,ASTNodeElement*)>
 <!ELEMENT ASTBehavior (fileName?,ASTBehaviorElement*)>
@@ -22,6 +22,7 @@
 
 <!-- Parser element (pe) -->
 
+<!ELEMENT parserRules (parserRule*)>
 <!ELEMENT parserRule (pe_idUse?, pe_idDecl, pe_definition)>
 <!ELEMENT pe_definition (pe_element*, pe_code?)>
 <!ELEMENT pe_element (pe_idUse, pe_name?)>

@@ -11,8 +11,6 @@
  ******************************************************************************/
 package edu.utep.cs.jasg.specificationGenerator.documentGenerator;
 
-import java.util.List;
-
 import org.jdom2.Element;
 
 /** Document factory creates a JastAdd document based on the input type. */
@@ -20,16 +18,21 @@ public class DocumentFactory {
 
 	ParserDocumentFactory parserDocumentFactory;
 
-	public StringBuffer createDocument(String type, String template,Element elementList) throws DocumentGeneratorException{
-
+	public StringBuffer createDocument(String type,Element documentContent) throws DocumentGeneratorException{
+		
+		//Select document type
 		switch (type) {
-		case "parser":  
+		case "parser": 
+			String template = documentContent.getChild("template").getText();
+			//Select parser document type
 			switch(template){
 			case "beaver":
-				parserDocumentFactory = new BeaverDocumentFactory(elementList);
+				parserDocumentFactory = new BeaverDocumentFactory(documentContent);
 				return parserDocumentFactory.generateDocument();
 			default: throw new DocumentGeneratorException("Not a valid template name");
 			}
+			
+
 		default: throw new DocumentGeneratorException("Not a valid document type");
 		}
 	}

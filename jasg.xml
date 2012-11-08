@@ -16,16 +16,24 @@
 	<nameSpace>Feature1</nameSpace>
 		<parser>
 			<template>beaver</template>
+			<parserRules>
+				<parserRule>
+					<pe_idUse>Collection</pe_idUse>
+					<pe_idDecl>any</pe_idDecl>
+					<pe_definition>
+						<pe_element>
+							<pe_idUse>expression</pe_idUse>
+							<pe_name>a</pe_name>
+						</pe_element>
+						<pe_element>
+							<pe_idUse>expression</pe_idUse>
+							<pe_name>b</pe_name>
+						</pe_element>
+						<pe_code>return new ArrayList();</pe_code>
+					</pe_definition>
+				</parserRule>
+			</parserRules>
 		</parser>
-		<ASTNodes>
-			<ASTNodeElement>
-				Node 1
-			</ASTNodeElement>
-		</ASTNodes>
-		<ASTBehavior>
-			<ASTBehaviorElement>
-				Aspect 1
-			</ASTBehaviorElement>
-		</ASTBehavior>
+
 </jasg>
 

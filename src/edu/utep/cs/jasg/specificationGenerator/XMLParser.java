@@ -13,7 +13,6 @@ package edu.utep.cs.jasg.specificationGenerator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -29,17 +28,18 @@ public class XMLParser {
 
 	private String nameSpace = "";
 	private FileFactory fileFactory = new FileFactory();
-	private DocumentFactory documentFactory;
+	private DocumentFactory documentFactory = new DocumentFactory();
 
 	//Main method for testing purposes only
 	public static void main(String[] args) {
 
 		XMLParser parser = new XMLParser();
+		//TODO: change to accept input argument
 		parser.parse("jasg.xml");
 
 	}
 
-	//TODO: create subparsing of elements (e.g. parsing rules) pass List to methods.
+	//TODO: create sub-parsing of elements (e.g. parsing rules) pass List to methods.
 	/** Parser XML file. */
 	public void parse(String fileName){
 		try {
@@ -52,37 +52,27 @@ public class XMLParser {
 			fileFactory.createDirectory(nameSpace);
 
 
-			//get parser elements
-			List<Element> parserElements = root.getChildren("parser");
+			//get root element declarations
+			Element parserElement = root.getChild("parser");
 
-			//get scanner elements
-			List<Element> scannerElements = root.getChildren("scanner");
+			Element scannerElement = root.getChild("scanner");
 
-			//get AST node declarations
-			List<Element> ASTNodeElements = root.getChildren("ASTNodes");
+			Element ASTNodeElement = root.getChild("ASTNodes");
 
-			//get AST behavior declarations
-			List<Element> ASTBehaviorElements = root.getChildren("ASTBehavior");
+			Element ASTBehaviorElement = root.getChild("ASTBehavior");
 
-			//parse parser elements
-			if(parserElements != null)
-				if(parserElements.size()>0)
-					parseParserElements(parserElements);
+			//parse element
+			if(parserElement != null)
+				parseElement(parserElement,"parser");
 
-			//parse scanner elements
-			if(scannerElements != null)
-				if(scannerElements.size()>0)
-					parseScannerElements(scannerElements);
+			if(scannerElement != null)
+				parseElement(scannerElement,"scanner");
 
-			//parse AST node elements
-			if(ASTNodeElements != null)
-				if(ASTNodeElements.size()>0)
-					parseASTNodeElements(ASTNodeElements);
+			if(ASTNodeElement != null)
+				parseElement(ASTNodeElement,"ASTNode");
 
-			//parse parser elements
-			if(ASTBehaviorElements != null)
-				if(ASTBehaviorElements.size()>0)
-					parseASTBehaviorElements(ASTBehaviorElements);
+			if(ASTBehaviorElement != null)
+				parseElement(ASTBehaviorElement,"ASTBehavior");
 
 
 		} catch (IOException io) {
@@ -92,61 +82,27 @@ public class XMLParser {
 		}
 	}
 
-	//TODO: add file name element to assign a file name to a set of elements
+	/** Parse element. */
+	private void parseElement(Element element, String type){
+		System.out.println("Parsing "+type+" elements");
+		String document;
 
-	/** Parse XML parser elements. */
-	private void parseParserElements(List<Element> parserElements){
-		System.out.println("Parsing parser elements");
-		
-		//Call Document factory
-		
-		//Create a factory based on document type
-		documentFactory = new DocumentFactory();
-		
-		//TODO: modify implementation
-		//Create document
-		Element template = parserElements.get(0);
-		Element elementList = parserElements.get(1);
-		
 		try {
-			StringBuffer documentBuffer = documentFactory.createDocument("parser", template.getText(), elementList);
+			//Create a document from a document factory
+			document = documentFactory.createDocument(type, element).toString();
+
+			System.out.println(document.toString());
+
+			//TODO: get filename, replace "default" value
+
+			//Create a new specification file from the document
+			fileFactory.createFile(document,nameSpace, "default", type);
 		} catch (DocumentGeneratorException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		//Create a new parser file based on created rules
-		
-		fileFactory.createFile(nameSpace, nameSpace, "parser");
+		}		
 
 	}
 
-	/** Parse XML scanner elements. */
-	private void parseScannerElements(List<Element> scannerElements){
-		System.out.println("Parsing scanner elements");
-
-		//Create a new scanner file
-		fileFactory.createFile(nameSpace, nameSpace, "flex");
-
-	}
-
-	/** Parse XML AST node elements. */
-	private void parseASTNodeElements(List<Element> ASTNodeElements){
-		System.out.println("Parsing AST node elements");
-
-		//Create a new AST file
-		fileFactory.createFile(nameSpace, nameSpace, "ast");
-
-	}
-
-	/** Parse XML AST behavior elements. */
-	private void parseASTBehaviorElements(List<Element> ASTBehaviorElements){
-		System.out.println("Parsing AST behavior elements");
-
-		//Create a new jrag or jadd file
-		fileFactory.createFile(nameSpace, nameSpace, "jrag");
-
-	}
 
 	/** Print XML file using XMLOutputter. */
 	public void printXMLFile(String fileName){

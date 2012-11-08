@@ -206,4 +206,53 @@ public class FileFactory {
 		}
 	}
 
+	public void createFile(String document, String path, String fileName, String extension) {
+    	//Check if current file exists
+    	
+    	File file = new File(CUSTOM_PATH+File.separator+path+File.separator+fileName+"."+extension);  
+
+    	//Create new file
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//Write file depending on selected type of document
+		try{
+			  // Create file writer
+			  FileWriter fstream = new FileWriter(file);
+			  BufferedWriter out = new BufferedWriter(fstream);
+			  
+				switch (extension) {
+	            case "parser":
+	            	out.write(document);
+	            	break;
+	                 
+	            case "flex":  
+	            	out.write(document);
+	            	break;
+	            	
+	            case "ast":  
+	            	out.write(document);
+	            	break;
+	            	
+	            case "jrag":  
+	            	out.write(document);
+	            	break;
+	           
+	            default: System.out.println("invalid extension");
+	            	break;
+				}
+			  
+			  //Close the output stream
+			  out.close();
+			  }catch (Exception e){//Catch exception if any
+			  System.err.println("Error: " + e.getMessage());
+		}
+		
+		System.out.println("File has been created: " + file.getAbsolutePath());
+		
+	}
+
 }
