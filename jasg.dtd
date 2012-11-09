@@ -23,7 +23,7 @@
 <!-- Parser element (pe) -->
 
 <!ELEMENT parserRules (parserRule*)>
-<!ELEMENT parserRule (pe_idUse?, pe_idDecl, pe_definition)>
+<!ELEMENT parserRule (pe_idUse?, pe_idDecl, pe_definition*)>
 <!ELEMENT pe_definition (pe_element*, pe_code?)>
 <!ELEMENT pe_element (pe_idUse, pe_name?)>
 <!ELEMENT pe_name (#PCDATA)>

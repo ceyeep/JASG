@@ -19,76 +19,125 @@ import org.jdom2.Element;
 
 /** Interface to define parser document operatoins. */ 
 public abstract class ParserDocumentFactory {
-	
+
 	private StringBuffer document = new StringBuffer();
-	private Element element;
-	
-	public ParserDocumentFactory(Element element){
-		this.element = element;
+	private Element parserRoot;
+	private String template = "";
+
+	public ParserDocumentFactory(Element parserRoot, String template){
+		this.parserRoot = parserRoot;
+		this.template = template;
 	}
-	
+
 	public StringBuffer generateDocument(){
-		document.append(getHeader());
-		buildRules();
-		document.append(getFooter());
-		
-		return document;
-		
-	}
 	
+		document.append(documentHeader());
+		buildRules();
+		document.append(documentFooter());
+
+		return document;
+
+	}
+
 	public void buildRules(){
-		Element parserRules = element.getChild("parserRules");
+		Element parserRules = parserRoot.getChild("parserRules");
 		if(parserRules != null){
+
+			//Get set of existing rules
 			List<Element> rules = parserRules.getChildren();
-			System.out.println("Size: "+rules.size());
-			Iterator<Element> iterator = rules.iterator();
-			while(iterator.hasNext()){
-				document.append(generateRule(iterator.next()).toString());
+			Iterator<Element> ruleIterator = rules.iterator();
+
+			//Add existing rules to document
+			while(ruleIterator.hasNext()){
+				document.append(generateRule(ruleIterator.next()).toString());
+				document.append(endOfRule());
 				document.append("\n");
 			}
-			
+
 		}
 	}
-	
+
+
+
 	public StringBuffer generateRule(Element rule){
 		StringBuffer ruleBuffer = new StringBuffer();
 		Element pe_idUse = rule.getChild("pe_idUse");
 		Element pe_idDecl = rule.getChild("pe_idDecl");
-		Element pe_definition = rule.getChild("pe_definition");
-		
-		//ID use
+
+		//Append ID use
 		if(pe_idUse != null)
 			ruleBuffer.append(pe_idUse.getText()+" ");
-		
-		//ID declaration
+
+		//Append ID declaration
 		ruleBuffer.append(pe_idDecl.getText()+" ");
-		
-		//Definition
-		List<Element> pe_elements = pe_definition.getChildren("pe_element");
-		
-		if(pe_elements != null)
-			if(pe_elements.size() > 0)
-			{
-				Iterator<Element> iterator = pe_elements.iterator();
-				while(iterator.hasNext()){
-					Element pe_element = iterator.next();
-					ruleBuffer.append(pe_element.getChild("pe_idUse").getText()+" ");
-					Element pe_name = pe_element.getChild("pe_name");
-					if(pe_name != null)
-						ruleBuffer.append(pe_name.getText()+" ");
+
+		//Add definition symbol
+		ruleBuffer.append(definitionSymbol());
+
+		//Get rule definitions
+		List<Element> pe_definitions = rule.getChildren("pe_definition");
+
+		if(pe_definitions != null){
+			Iterator<Element> definitionIterator = pe_definitions.iterator();
+
+			//Iterate through existing definitions
+			while(definitionIterator.hasNext()){
+				//Definition
+				Element pe_definition = definitionIterator.next();
+
+				List<Element> pe_elements = pe_definition.getChildren("pe_element");
+
+				if(pe_elements != null)
+					if(pe_elements.size() > 0)
+					{
+						//Iterate through different 
+						Iterator<Element> elementIterator = pe_elements.iterator();
+						while(elementIterator.hasNext()){
+							Element pe_element = elementIterator.next();
+							ruleBuffer.append(pe_element.getChild("pe_idUse").getText());
+							ruleBuffer.append(idUseSeparator());
+							Element pe_name = pe_element.getChild("pe_name");
+							if(pe_name != null)
+								ruleBuffer.append(pe_name.getText()+" ");
+						}
+					}
+
+				Element pe_code = pe_definition.getChild("pe_code");
+				if(pe_code != null)
+				{	
+					ruleBuffer.append(codeInit());
+					ruleBuffer.append(pe_code.getText());
+					ruleBuffer.append(codeEnd());
 				}
+
+				if(definitionIterator.hasNext())
+					ruleBuffer.append(elseSymbol());
 			}
-		
-		Element pe_code = pe_definition.getChild("pe_code");
-		if(pe_code != null)
-			ruleBuffer.append(pe_code.getText()+" ");
-		
+		}
 		return ruleBuffer;
 	}
+	
+	public String getTemplateName(){
+		return template;
+	}
 
-	abstract StringBuffer getFooter();
+	//Template methods
 
-	abstract StringBuffer getHeader();
+	abstract String documentFooter();
+
+	abstract String documentHeader();
+
+	abstract String endOfRule();
+
+	abstract String definitionSymbol();
+	
+	abstract String elseSymbol();
+	
+	abstract String idUseSeparator();
+	
+	abstract String codeInit();
+	
+	abstract String codeEnd();
 
 }
 

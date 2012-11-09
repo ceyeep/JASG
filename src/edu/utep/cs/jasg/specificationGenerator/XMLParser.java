@@ -63,16 +63,16 @@ public class XMLParser {
 
 			//parse element
 			if(parserElement != null)
-				parseElement(parserElement,"parser");
+				parseElement("parser",parserElement);
 
 			if(scannerElement != null)
-				parseElement(scannerElement,"scanner");
+				parseElement("scanner",scannerElement);
 
 			if(ASTNodeElement != null)
-				parseElement(ASTNodeElement,"ASTNode");
+				parseElement("ASTNode",ASTNodeElement);
 
 			if(ASTBehaviorElement != null)
-				parseElement(ASTBehaviorElement,"ASTBehavior");
+				parseElement("ASTBehavior",ASTBehaviorElement);
 
 
 		} catch (IOException io) {
@@ -83,20 +83,22 @@ public class XMLParser {
 	}
 
 	/** Parse element. */
-	private void parseElement(Element element, String type){
+	private void parseElement(String type, Element element){
 		System.out.println("Parsing "+type+" elements");
-		String document;
-
+		
 		try {
 			//Create a document from a document factory
-			document = documentFactory.createDocument(type, element).toString();
+			String document = documentFactory.createDocument(type, element).toString();
 
 			System.out.println(document.toString());
 
-			//TODO: get filename, replace "default" value
-
 			//Create a new specification file from the document
-			fileFactory.createFile(document,nameSpace, "default", type);
+			Element fileName = element.getChild("fileName");
+			if(fileName != null)		
+				fileFactory.createFile(document,nameSpace, fileName.getText(), type);
+			else		
+				fileFactory.createFile(document,nameSpace, nameSpace, type);
+			
 		} catch (DocumentGeneratorException e) {
 			e.printStackTrace();
 		}		

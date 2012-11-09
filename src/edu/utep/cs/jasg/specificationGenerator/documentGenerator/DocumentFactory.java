@@ -16,24 +16,31 @@ import org.jdom2.Element;
 /** Document factory creates a JastAdd document based on the input type. */
 public class DocumentFactory {
 
-	ParserDocumentFactory parserDocumentFactory;
+	private ParserDocumentFactory parserDocumentFactory;
+	private static final String DEFAULT_PARSER = "beaver";
 
 	public StringBuffer createDocument(String type,Element documentContent) throws DocumentGeneratorException{
 		
 		//Select document type
 		switch (type) {
 		case "parser": 
-			String template = documentContent.getChild("template").getText();
+			String template = "";
+			
+			Element templateElement = documentContent.getChild("template");
+			if(templateElement != null)
+				template = templateElement.getText();
+			else template = DEFAULT_PARSER;
+			
 			//Select parser document type
 			switch(template){
 			case "beaver":
-				parserDocumentFactory = new BeaverDocumentFactory(documentContent);
+				parserDocumentFactory = new BeaverDocumentFactory(documentContent,template);
 				return parserDocumentFactory.generateDocument();
-			default: throw new DocumentGeneratorException("Not a valid template name");
+			default: throw new DocumentGeneratorException("Invalid template name");
 			}
 			
 
-		default: throw new DocumentGeneratorException("Not a valid document type");
+		default: throw new DocumentGeneratorException("Invalid document type");
 		}
 	}
 }
