@@ -39,6 +39,7 @@
 						<pe_code>return new ArrayList();</pe_code>
 					</pe_definition>
 				</parserRule>
+				
 				<parserRule>
 					<pe_idUse>Collection</pe_idUse>
 					<pe_idDecl>collect</pe_idDecl>
@@ -56,5 +57,24 @@
 				</parserRule>
 			</parserRules>
 		</parser>
+		
+		<scanner>
+			<scannerRuleSets>
+				<scannerRuleSet>
+					<se_states>
+						<se_state>CLEANSINGLEEXPRESSION</se_state>
+						<se_state>CLEANMULTILINEEXPRESSION</se_state>
+					</se_states>
+					<se_rules>
+						<se_rule>
+							<se_idDecl>\\collect</se_idDecl>
+							<se_action>
+								<se_terminalName>ANY_ITERATOR</se_terminalName>
+							</se_action>
+						</se_rule>
+					</se_rules>
+				</scannerRuleSet>
+			</scannerRuleSets>
+		</scanner>
 </jasg>
 

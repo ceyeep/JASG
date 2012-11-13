@@ -13,34 +13,84 @@ package edu.utep.cs.jasg.specificationGenerator.documentGenerator;
 
 import org.jdom2.Element;
 
+import edu.utep.cs.jasg.specificationGenerator.FileFactory;
+
 /** Document factory creates a JastAdd document based on the input type. */
 public class DocumentFactory {
 
-	private ParserDocumentFactory parserDocumentFactory;
 	private static final String DEFAULT_PARSER = "beaver";
+	private static final String DEFAULT_SCANNER = "jflex";
+	private String nameSpace;
 
-	public StringBuffer createDocument(String type,Element documentContent) throws DocumentGeneratorException{
-		
+	public DocumentFactory(String nameSpace){
+		this.nameSpace = nameSpace;
+	}
+
+	public void createDocument(String type,Element documentContent) throws DocumentGeneratorException{
+		String fileName = "";
+		String document = "";
+
+		Element fileNameElement = documentContent.getChild("fileName");
+		if(fileNameElement != null)
+			fileName = fileNameElement.getText();
+		else fileName = nameSpace;
+
+
 		//Select document type
 		switch (type) {
 		case "parser": 
+		{
+			ParserDocumentFactory parserDocumentFactory;
 			String template = "";
-			
+
 			Element templateElement = documentContent.getChild("template");
 			if(templateElement != null)
 				template = templateElement.getText();
 			else template = DEFAULT_PARSER;
-			
+
 			//Select parser document type
 			switch(template){
+			//This is a JastAdd beaver specification template
 			case "beaver":
+			{
 				parserDocumentFactory = new BeaverDocumentFactory(documentContent,template);
-				return parserDocumentFactory.generateDocument();
-			default: throw new DocumentGeneratorException("Invalid template name");
+				document = parserDocumentFactory.generateDocument();
+				if(fileName != null)		
+					FileFactory.createFile(document,nameSpace, fileName, type);
+				break;
 			}
-			
+			default: throw new DocumentGeneratorException("Invalid template name: "+template);
+			}
+			break;
+		}
+		
+		case "scanner":
+		{
+			ScannerDocumentFactory scannerDocumentFactory;
+			String template = "";
 
-		default: throw new DocumentGeneratorException("Invalid document type");
+			Element templateElement = documentContent.getChild("template");
+			if(templateElement != null)
+				template = templateElement.getText();
+			else template = DEFAULT_SCANNER;
+
+			//Select scanner document type
+			switch(template){
+			//this is really a slim jflex template
+			case "jflex":
+			{
+				scannerDocumentFactory = new JFlexDocumentFactory(documentContent,template);
+				document = scannerDocumentFactory.generateDocument();
+				if(fileName != null)		
+					FileFactory.createFile(document,nameSpace, fileName, "flex");
+				break;
+
+			}
+			default: throw new DocumentGeneratorException("Invalid template name: "+template);
+			}
+			break;
+		}	
+		default: throw new DocumentGeneratorException("Invalid document type: "+type);
 		}
 	}
 }

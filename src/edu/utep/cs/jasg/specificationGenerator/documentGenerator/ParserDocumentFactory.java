@@ -17,7 +17,7 @@ import java.util.List;
 import org.jdom2.Element;
 
 
-/** Interface to define parser document operatoins. */ 
+/** Interface to define parser document operations. */ 
 public abstract class ParserDocumentFactory {
 
 	private StringBuffer document = new StringBuffer();
@@ -29,13 +29,12 @@ public abstract class ParserDocumentFactory {
 		this.template = template;
 	}
 
-	public StringBuffer generateDocument(){
+	public String generateDocument(){
 	
 		document.append(documentHeader());
 		buildRules();
-		document.append(documentFooter());
 
-		return document;
+		return document.toString();
 
 	}
 
@@ -56,8 +55,6 @@ public abstract class ParserDocumentFactory {
 
 		}
 	}
-
-
 
 	public StringBuffer generateRule(Element rule){
 		StringBuffer ruleBuffer = new StringBuffer();
@@ -120,24 +117,27 @@ public abstract class ParserDocumentFactory {
 	public String getTemplateName(){
 		return template;
 	}
+	
+	/** Return document in a StringBuffer. */
+	public StringBuffer getDocument(){
+		return document;
+	}
 
 	//Template methods
 
-	abstract String documentFooter();
+	abstract protected String documentHeader();
 
-	abstract String documentHeader();
+	abstract protected String endOfRule();
 
-	abstract String endOfRule();
-
-	abstract String definitionSymbol();
+	abstract protected String definitionSymbol();
 	
-	abstract String elseSymbol();
+	abstract protected String elseSymbol();
 	
-	abstract String idUseSeparator();
+	abstract protected String idUseSeparator();
 	
-	abstract String codeInit();
+	abstract protected String codeInit();
 	
-	abstract String codeEnd();
+	abstract protected String codeEnd();
 
 }
 

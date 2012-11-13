@@ -22,13 +22,11 @@ import org.jdom2.output.XMLOutputter;
 
 import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentFactory;
 import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentGeneratorException;
-import edu.utep.cs.jasg.specificationGenerator.fileGenerator.FileFactory;
 
 public class XMLParser {
 
 	private String nameSpace = "";
-	private FileFactory fileFactory = new FileFactory();
-	private DocumentFactory documentFactory = new DocumentFactory();
+	private DocumentFactory documentFactory;
 
 	//Main method for testing purposes only
 	public static void main(String[] args) {
@@ -49,7 +47,8 @@ public class XMLParser {
 
 			//create a new namespace
 			nameSpace = root.getChild("nameSpace").getText();
-			fileFactory.createDirectory(nameSpace);
+			FileFactory.createDirectory(nameSpace);
+			documentFactory = new DocumentFactory(nameSpace);
 
 
 			//get root element declarations
@@ -87,17 +86,8 @@ public class XMLParser {
 		System.out.println("Parsing "+type+" elements");
 		
 		try {
-			//Create a document from a document factory
-			String document = documentFactory.createDocument(type, element).toString();
-
-			System.out.println(document.toString());
-
-			//Create a new specification file from the document
-			Element fileName = element.getChild("fileName");
-			if(fileName != null)		
-				fileFactory.createFile(document,nameSpace, fileName.getText(), type);
-			else		
-				fileFactory.createFile(document,nameSpace, nameSpace, type);
+			//Create a new file
+			documentFactory.createDocument(type, element);
 			
 		} catch (DocumentGeneratorException e) {
 			e.printStackTrace();

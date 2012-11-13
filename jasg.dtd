@@ -9,10 +9,10 @@
 # Contributors:
 #     Cesar Yeep - initial API and implementation
 -->
-<!ELEMENT jasg (nameSpace?,parser?,scanner?,ASTNodes?,ASTBehavior?)>
+<!ELEMENT jasg (nameSpace,parser?,scanner?,ASTNodes?,ASTBehavior?)>
 
-<!ELEMENT parser (fileName?,template,parserRules?)>
-<!ELEMENT scanner (fileName?,scannerElement*)>
+<!ELEMENT parser (fileName?,template?,parserRules?)>
+<!ELEMENT scanner (fileName?,template?,scannerRuleSets?)>
 <!ELEMENT ASTNodes (fileName?,ASTNodeElement*)>
 <!ELEMENT ASTBehavior (fileName?,ASTBehaviorElement*)>
 
@@ -33,7 +33,16 @@
 
 <!-- Scanner element (se) -->
 
-<!ELEMENT scannerElement (#PCDATA)>
+<!ELEMENT scannerRuleSets (scannerRuleSet*)>
+<!ELEMENT scannerRuleSet (se_states, se_rules?)>
+<!ELEMENT se_states (se_state+)>
+<!ELEMENT se_rules (se_rule*)>
+<!ELEMENT se_rule (se_idDecl, se_action)>
+<!ELEMENT se_action (se_code?, se_terminalName)>
+<!ELEMENT se_state (#PCDATA)>
+<!ELEMENT se_idDecl (#PCDATA)>
+<!ELEMENT se_code (#PCDATA)>
+<!ELEMENT se_terminalName (#PCDATA)>
 
 <!-- AST node element (astn) -->
 
