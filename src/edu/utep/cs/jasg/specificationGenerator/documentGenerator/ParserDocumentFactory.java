@@ -32,13 +32,13 @@ public abstract class ParserDocumentFactory {
 	public String generateDocument(){
 	
 		document.append(documentHeader());
-		buildRules();
+		parseRules();
 
 		return document.toString();
 
 	}
 
-	public void buildRules(){
+	public void parseRules(){
 		Element parserRules = parserRoot.getChild("parserRules");
 		if(parserRules != null){
 
@@ -48,7 +48,7 @@ public abstract class ParserDocumentFactory {
 
 			//Add existing rules to document
 			while(ruleIterator.hasNext()){
-				document.append(generateRule(ruleIterator.next()).toString());
+				document.append(parseRule(ruleIterator.next()).toString());
 				document.append(endOfRule());
 				document.append("\n");
 			}
@@ -56,7 +56,7 @@ public abstract class ParserDocumentFactory {
 		}
 	}
 
-	public StringBuffer generateRule(Element rule){
+	public StringBuffer parseRule(Element rule){
 		StringBuffer ruleBuffer = new StringBuffer();
 		Element pe_idUse = rule.getChild("pe_idUse");
 		Element pe_idDecl = rule.getChild("pe_idDecl");

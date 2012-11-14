@@ -14,7 +14,7 @@
 <!ELEMENT parser (fileName?,template?,parserRules?)>
 <!ELEMENT scanner (fileName?,template?,scannerRuleSets?)>
 <!ELEMENT ASTNodes (fileName?,ASTNodeElement*)>
-<!ELEMENT ASTBehavior (fileName?,ASTBehaviorElement*)>
+<!ELEMENT ASTBehavior (fileName?,aspects?)>
 
 <!ELEMENT nameSpace (#PCDATA)>
 <!ELEMENT fileName (#PCDATA)>
@@ -50,4 +50,7 @@
 
 <!-- AST behavior element (astb) -->
 
+<!ELEMENT aspects (aspect*)>
+<!ELEMENT aspect (aspectName, ASTBehaviorElements?)>
+<!ELEMENT ASTBehaviorElements (ASTBehaviorElement*)>
 <!ELEMENT ASTBehaviorElement (#PCDATA)>

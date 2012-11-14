@@ -32,13 +32,13 @@ public abstract class ScannerDocumentFactory {
 	public String generateDocument(){
 	
 		document.append(documentHeader());
-		buildRules();
+		parseRules();
 
 		return document.toString();
 
 	}
 
-	protected void buildRules(){
+	protected void parseRules(){
 		Element ruleSetsElement = scannerRoot.getChild("scannerRuleSets");
 		if(ruleSetsElement != null){
 
@@ -48,14 +48,14 @@ public abstract class ScannerDocumentFactory {
 
 			//Add existing rule sets
 			while(ruleSetsIterator.hasNext()){
-				document.append(generateRuleSet(ruleSetsIterator.next()).toString());
+				document.append(parseRuleSet(ruleSetsIterator.next()).toString());
 			}
 
 		}
 	}
 
 
-	protected StringBuffer generateRuleSet(Element ruleSet){
+	protected StringBuffer parseRuleSet(Element ruleSet){
 
 		StringBuffer ruleBuffer = new StringBuffer();
 		Element se_states = ruleSet.getChild("se_states");
@@ -81,14 +81,14 @@ public abstract class ScannerDocumentFactory {
 		
 		//Iterate through rule elements
 		while(rulesIterator.hasNext()){
-			document.append(generateScannerRule(rulesIterator.next()));
+			document.append(parseScannerRule(rulesIterator.next()));
 		}		
 		
 		document.append(endOfRuleSet());
 		return ruleBuffer;
 	}
 	
-	protected String generateScannerRule(Element ruleElement){
+	protected String parseScannerRule(Element ruleElement){
 		StringBuffer rule = new StringBuffer();
 		Element se_idDecl = ruleElement.getChild("se_idDecl");
 		Element se_action = ruleElement.getChild("se_action");

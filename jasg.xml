@@ -76,5 +76,20 @@
 				</scannerRuleSet>
 			</scannerRuleSets>
 		</scanner>
+		<ASTBehavior>
+			<aspects>
+				<aspect>
+					<aspectName>OperateIterators</aspectName>
+					<ASTBehaviorElements>
+						<ASTBehaviorElement>
+							public String AnyIterator.toSimpleString() {
+								String s = "\\any";
+								return s + message;
+							}
+						</ASTBehaviorElement>
+					</ASTBehaviorElements>
+				</aspect>
+			</aspects>
+		</ASTBehavior>
 </jasg>
 

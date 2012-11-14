@@ -89,7 +89,18 @@ public class DocumentFactory {
 			default: throw new DocumentGeneratorException("Invalid template name: "+template);
 			}
 			break;
-		}	
+		}
+		
+		case "ASTBehavior":
+		{
+			ASTBehaviorDocumentFactory ASTBehaviorDocumentFactory;
+			ASTBehaviorDocumentFactory = new ASTBehaviorDocumentFactory(documentContent);
+			document = ASTBehaviorDocumentFactory.generateDocument();
+			if(fileName != null)		
+				FileFactory.createFile(document,nameSpace, fileName, "jrag");
+			break;
+
+		}
 		default: throw new DocumentGeneratorException("Invalid document type: "+type);
 		}
 	}
