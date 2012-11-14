@@ -76,6 +76,16 @@
 				</scannerRuleSet>
 			</scannerRuleSets>
 		</scanner>
+		<AST>
+			<ast_definitions>
+				<ast_definition abstract="true">
+					<ast_name>Iterator</ast_name>
+					<ast_children>
+						<ast_child>Expr</ast_child>
+					</ast_children>
+				</ast_definition>
+			</ast_definitions>
+		</AST>
 		<ASTBehavior>
 			<aspects>
 				<aspect>

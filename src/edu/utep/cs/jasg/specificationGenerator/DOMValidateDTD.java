@@ -18,7 +18,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-/** Valdiate XML file. */
+/** Validate XML file. */
 public class DOMValidateDTD {
 	public static void main(String args[]) {	
 		try{

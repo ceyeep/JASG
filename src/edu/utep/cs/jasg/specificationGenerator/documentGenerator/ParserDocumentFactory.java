@@ -48,7 +48,7 @@ public abstract class ParserDocumentFactory {
 
 			//Add existing rules to document
 			while(ruleIterator.hasNext()){
-				document.append(parseRule(ruleIterator.next()).toString());
+				document.append(parseRule(ruleIterator.next()));
 				document.append(endOfRule());
 				document.append("\n");
 			}
@@ -56,7 +56,7 @@ public abstract class ParserDocumentFactory {
 		}
 	}
 
-	public StringBuffer parseRule(Element rule){
+	public String parseRule(Element rule){
 		StringBuffer ruleBuffer = new StringBuffer();
 		Element pe_idUse = rule.getChild("pe_idUse");
 		Element pe_idDecl = rule.getChild("pe_idDecl");
@@ -79,39 +79,43 @@ public abstract class ParserDocumentFactory {
 
 			//Iterate through existing definitions
 			while(definitionIterator.hasNext()){
-				//Definition
+				//Parse definition
 				Element pe_definition = definitionIterator.next();
-
-				List<Element> pe_elements = pe_definition.getChildren("pe_element");
-
-				if(pe_elements != null)
-					if(pe_elements.size() > 0)
-					{
-						//Iterate through different 
-						Iterator<Element> elementIterator = pe_elements.iterator();
-						while(elementIterator.hasNext()){
-							Element pe_element = elementIterator.next();
-							ruleBuffer.append(pe_element.getChild("pe_idUse").getText());
-							ruleBuffer.append(idUseSeparator());
-							Element pe_name = pe_element.getChild("pe_name");
-							if(pe_name != null)
-								ruleBuffer.append(pe_name.getText()+" ");
-						}
-					}
-
-				Element pe_code = pe_definition.getChild("pe_code");
-				if(pe_code != null)
-				{	
-					ruleBuffer.append(codeInit());
-					ruleBuffer.append(pe_code.getText());
-					ruleBuffer.append(codeEnd());
-				}
-
+				ruleBuffer.append(parseDefinition(pe_definition));
+				
 				if(definitionIterator.hasNext())
 					ruleBuffer.append(elseSymbol());
 			}
 		}
-		return ruleBuffer;
+		return ruleBuffer.toString();
+	}
+	
+	protected String parseDefinition(Element pe_definition){
+		List<Element> pe_elements = pe_definition.getChildren("pe_element");
+		StringBuffer ruleBuffer = new StringBuffer();
+		if(pe_elements != null)
+			if(pe_elements.size() > 0)
+			{
+				//Iterate through different 
+				Iterator<Element> elementIterator = pe_elements.iterator();
+				while(elementIterator.hasNext()){
+					Element pe_element = elementIterator.next();
+					ruleBuffer.append(pe_element.getChild("pe_idUse").getText());
+					ruleBuffer.append(idUseSeparator());
+					Element pe_name = pe_element.getChild("pe_name");
+					if(pe_name != null)
+						ruleBuffer.append(pe_name.getText()+" ");
+				}
+			}
+
+		Element pe_code = pe_definition.getChild("pe_code");
+		if(pe_code != null)
+		{	
+			ruleBuffer.append(codeInit());
+			ruleBuffer.append(pe_code.getText());
+			ruleBuffer.append(codeEnd());
+		}
+		return ruleBuffer.toString();
 	}
 	
 	public String getTemplateName(){

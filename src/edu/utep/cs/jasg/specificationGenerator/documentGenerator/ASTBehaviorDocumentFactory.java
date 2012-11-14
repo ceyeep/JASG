@@ -67,13 +67,16 @@ public class ASTBehaviorDocumentFactory {
 		
 		Element ASTBehaviorsElement = aspectElement.getChild("ASTBehaviorElements");
 		
-		//Get set of existing AST behavior elements 
-		List<Element> ASTBehaviorList = ASTBehaviorsElement.getChildren();
-		Iterator<Element> ASTBehaviorIterator = ASTBehaviorList.iterator();
-
-		//Add existing behavior elements (i.e. attributes, rewrites)
-		while(ASTBehaviorIterator.hasNext()){
-			document.append(formatASTBehavior(ASTBehaviorIterator.next().getText()));
+		if(ASTBehaviorsElement != null){
+		
+			//Get set of existing AST behavior elements 
+			List<Element> ASTBehaviorList = ASTBehaviorsElement.getChildren();
+			Iterator<Element> ASTBehaviorIterator = ASTBehaviorList.iterator();
+	
+			//Add existing behavior elements (i.e. attributes, rewrites)
+			while(ASTBehaviorIterator.hasNext()){
+				document.append(formatASTBehavior(ASTBehaviorIterator.next().getText()));
+			}
 		}
 		
 		document.append(aspectEnd());

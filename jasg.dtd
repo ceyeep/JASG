@@ -9,11 +9,11 @@
 # Contributors:
 #     Cesar Yeep - initial API and implementation
 -->
-<!ELEMENT jasg (nameSpace,parser?,scanner?,ASTNodes?,ASTBehavior?)>
+<!ELEMENT jasg (nameSpace,parser?,scanner?,AST?,ASTBehavior?)>
 
 <!ELEMENT parser (fileName?,template?,parserRules?)>
 <!ELEMENT scanner (fileName?,template?,scannerRuleSets?)>
-<!ELEMENT ASTNodes (fileName?,ASTNodeElement*)>
+<!ELEMENT AST (fileName?,ast_definitions?)>
 <!ELEMENT ASTBehavior (fileName?,aspects?)>
 
 <!ELEMENT nameSpace (#PCDATA)>
@@ -46,11 +46,18 @@
 
 <!-- AST node element (astn) -->
 
-<!ELEMENT ASTNodeElement (#PCDATA)>
+<!ELEMENT ast_definitions (ast_definition*)>
+<!ELEMENT ast_definition (ast_name, ast_superClass?, ast_children?)>
+<!ATTLIST ast_definition abstract CDATA "false">
+<!ELEMENT ast_children (ast_child*)>
+<!ELEMENT ast_name (#PCDATA)>
+<!ELEMENT ast_superClass (#PCDATA)>
+<!ELEMENT ast_child (#PCDATA)>
 
 <!-- AST behavior element (astb) -->
 
 <!ELEMENT aspects (aspect*)>
 <!ELEMENT aspect (aspectName, ASTBehaviorElements?)>
 <!ELEMENT ASTBehaviorElements (ASTBehaviorElement*)>
+<!ELEMENT aspectName (#PCDATA)>
 <!ELEMENT ASTBehaviorElement (#PCDATA)>

@@ -75,15 +75,16 @@ public abstract class ScannerDocumentFactory {
 		}
 		document.append(startOfRuleSet(states));
 		
-		//Append existing scanner rules
-		List<Element> rules = se_rules.getChildren();
-		Iterator<Element> rulesIterator = rules.iterator();
-		
-		//Iterate through rule elements
-		while(rulesIterator.hasNext()){
-			document.append(parseScannerRule(rulesIterator.next()));
-		}		
-		
+		if(se_rules != null){
+			//Append existing scanner rules
+			List<Element> rules = se_rules.getChildren();
+			Iterator<Element> rulesIterator = rules.iterator();
+			
+			//Iterate through rule elements
+			while(rulesIterator.hasNext()){
+				document.append(parseScannerRule(rulesIterator.next()));
+			}		
+		}
 		document.append(endOfRuleSet());
 		return ruleBuffer;
 	}

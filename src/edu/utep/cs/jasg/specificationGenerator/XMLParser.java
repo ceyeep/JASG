@@ -56,7 +56,7 @@ public class XMLParser {
 
 			Element scannerElement = root.getChild("scanner");
 
-			Element ASTNodeElement = root.getChild("ASTNodes");
+			Element ASTNodeElement = root.getChild("AST");
 
 			Element ASTBehaviorElement = root.getChild("ASTBehavior");
 
@@ -68,7 +68,7 @@ public class XMLParser {
 				parseElement("scanner",scannerElement);
 
 			if(ASTNodeElement != null)
-				parseElement("ASTNode",ASTNodeElement);
+				parseElement("AST",ASTNodeElement);
 
 			if(ASTBehaviorElement != null)
 				parseElement("ASTBehavior",ASTBehaviorElement);

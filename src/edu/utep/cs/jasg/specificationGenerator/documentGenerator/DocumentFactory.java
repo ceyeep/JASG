@@ -91,11 +91,20 @@ public class DocumentFactory {
 			break;
 		}
 		
+		case "AST":
+		{
+			ASTDocumentFactory astDocumentFactory = new ASTDocumentFactory(documentContent);
+			document = astDocumentFactory.generateDocument();
+			if(fileName != null)		
+				FileFactory.createFile(document,nameSpace, fileName, "ast");
+			break;
+
+		}
+		
 		case "ASTBehavior":
 		{
-			ASTBehaviorDocumentFactory ASTBehaviorDocumentFactory;
-			ASTBehaviorDocumentFactory = new ASTBehaviorDocumentFactory(documentContent);
-			document = ASTBehaviorDocumentFactory.generateDocument();
+			ASTBehaviorDocumentFactory astBehaviorDocumentFactory = new ASTBehaviorDocumentFactory(documentContent);
+			document = astBehaviorDocumentFactory.generateDocument();
 			if(fileName != null)		
 				FileFactory.createFile(document,nameSpace, fileName, "jrag");
 			break;
