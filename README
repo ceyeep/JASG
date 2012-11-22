@@ -1,5 +1,39 @@
 JASG - Readme
 
+The JastAdd Specification Generator Framework (JASG) consists of a set of tools 
+that facilitate the generation of JastAdd module documentation and the creation 
+of new module features.
+
+The documentation generator program creates an API of the scanner and parser 
+rules of the modules. 
+
+The XML parser program parses a JASG XML specification and generates a set of
+JastAdd specification files such as parser, scanner, and AST and AST behavior
+specifications.
+
+The structure of the JASG XML is described in the jasg.dtd file.
+
+The creates files are stored in a "custom" directory.
+A namespace is given to group different types of files in a 
+same directory.
+
+Different templates can be used to use different specifcations tools.
+For example, the default scanner tools is jflex. JASG provides a 
+jflex template (JFlexDocumentFactory.java) that constructs a jflex
+specification file. Other templates can be created such as flex template
+that extends the ScannerFactory.java.
+
+The default parser template is beaver.
+
+The framework can be used to create a skeleton of a project with
+empty files, partial files, or complete specifications.
+
+NOTES:
+- Future work includes identifying necessary AST behavior specifications, 
+  such as AST attributes and rewrites, for given AST definitons.
+- Also a GUI is in development to help in the creation of a JASG XML
+  specification file.
+
 LICENSING
 
 The JASG framework code is covered by the BSD license.
