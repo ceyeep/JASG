@@ -28,21 +28,12 @@ public class XMLParser {
 	private String nameSpace = "";
 	private DocumentFactory documentFactory;
 
-	//Main method for testing purposes only
-	public static void main(String[] args) {
-
-		XMLParser parser = new XMLParser();
-		//TODO: change to accept input argument
-		parser.parse("jasg.xml");
-
-	}
-
 	//TODO: create sub-parsing of elements (e.g. parsing rules) pass List to methods.
 	/** Parser XML file. */
-	public void parse(String fileName){
+	public void parse(File file){
 		try {
 			SAXBuilder builder = new SAXBuilder();
-			Document doc = (Document) builder.build(new File(fileName));
+			Document doc = (Document) builder.build(file);
 			Element root = doc.getRootElement();
 
 			//create a new namespace
@@ -97,13 +88,13 @@ public class XMLParser {
 
 
 	/** Print XML file using XMLOutputter. */
-	public void printXMLFile(String fileName){
+	public void printXMLFile(File file){
 
 		try {
 			// Build the document with SAX and Xerces, no validation
 			SAXBuilder builder = new SAXBuilder();
 			// Create the document
-			Document doc = builder.build(new File(fileName));
+			Document doc = builder.build(file);
 
 			// Output the document, use standard formatter
 			XMLOutputter fmt = new XMLOutputter();

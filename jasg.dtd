@@ -44,7 +44,7 @@
 <!ELEMENT se_code (#PCDATA)>
 <!ELEMENT se_terminalName (#PCDATA)>
 
-<!-- AST node element (astn) -->
+<!-- AST node element (ast) -->
 
 <!ELEMENT ast_definitions (ast_definition*)>
 <!ELEMENT ast_definition (ast_name, ast_superClass?, ast_children?)>
@@ -54,7 +54,7 @@
 <!ELEMENT ast_superClass (#PCDATA)>
 <!ELEMENT ast_child (#PCDATA)>
 
-<!-- AST behavior element (astb) -->
+<!-- AST behavior element (asp) -->
 
 <!ELEMENT aspects (aspect*)>
 <!ELEMENT aspect (aspectName, ASTBehaviorElements?)>

@@ -11,14 +11,67 @@
  ******************************************************************************/
 package edu.utep.cs.jasg.specificationGenerator;
 
+import java.io.File;
+
+import edu.utep.cs.jasg.Frontend;
+
 /** Main class that process a JASG XML spec file */
-public class MainSpecificationGenerator {
+public class MainSpecificationGenerator  extends Frontend{
 
 	public static void main(String[] args){
-		System.out.println("Parsing JASG file");
-		
-		XMLParser xmlParser = new XMLParser();
-		xmlParser.parse(args[0]);
+
+		MainSpecificationGenerator main = new MainSpecificationGenerator(args);
+		main.createWorkspace("C:\\asgasgasdg\\LO\\SHO\\sHo");
 	}
-	
+
+	/** Main checker constructor. */
+	public MainSpecificationGenerator(String[] args)
+	{
+		super();
+		if(args.length > 0)
+		{
+			String arg = args[0];
+			if(arg.startsWith("-"))
+				processOptions(arg);
+			else{
+				//Process file
+				File file = new File(arg);
+				//Parse file
+				XMLParser xmlParser = new XMLParser();
+				xmlParser.parse(file);
+			}
+		}
+		else
+			printUsage();
+	}
+
+	/** Process options. */
+	public void processOptions(String arg){
+		switch(arg){
+		case "-version":
+			printVersion();
+			break;
+		case "-help":
+			printUsage();
+			break;
+		default: System.out.println("Invalid option");
+		break;
+		}
+	}
+
+	/** Define tool name property. */
+	public String defineToolNameProperty() {
+		return "jasg.SpecGenTool";
+	}
+
+	/** Print basic tool usage. */
+	public void printUsage() {
+		System.out.println(
+				getFrameworkNameProperty() + ": " + getToolNameProperty() + "\n\n" +
+						"Usage example: jar "+ getToolNameProperty() + "<options>\n" +
+						"or: jar MainSpecificationGenetaor <JASGXMLFile.xml>\n" +
+						"  -help \t\t Print a synopsis of standard options\n" +
+						"  -version \t\t Print version information\n"
+				);
+	}
 }
