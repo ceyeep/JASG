@@ -15,18 +15,20 @@ import org.jdom2.Element;
 
 import edu.utep.cs.jasg.specificationGenerator.FileFactory;
 
-/** Document factory creates a JastAdd document based on the input type. */
-public class DocumentFactory {
+/** Creates a JastAdd specification file. */
+public class SpecificationGenerator {
 
 	private static final String DEFAULT_PARSER = "beaver";
 	private static final String DEFAULT_SCANNER = "jflex";
 	private String nameSpace;
+	private FileFactory fileFactory;
 
-	public DocumentFactory(String nameSpace){
+	public SpecificationGenerator(FileFactory fileFactory, String nameSpace){
+		this.fileFactory = fileFactory;
 		this.nameSpace = nameSpace;
 	}
 
-	public void createDocument(String type,Element documentContent) throws DocumentGeneratorException{
+	public void generateSpecification(String type,Element documentContent) throws DocumentGeneratorException{	
 		String fileName = "";
 		String document = "";
 
@@ -56,7 +58,7 @@ public class DocumentFactory {
 				parserDocumentFactory = new BeaverDocumentFactory(documentContent,template);
 				document = parserDocumentFactory.generateDocument();
 				if(fileName != null)		
-					FileFactory.createFile(document,nameSpace, fileName, type);
+					fileFactory.createFile(document,nameSpace, fileName, type);
 				break;
 			}
 			default: throw new DocumentGeneratorException("Invalid template name: "+template);
@@ -82,7 +84,7 @@ public class DocumentFactory {
 				scannerDocumentFactory = new JFlexDocumentFactory(documentContent,template);
 				document = scannerDocumentFactory.generateDocument();
 				if(fileName != null)		
-					FileFactory.createFile(document,nameSpace, fileName, "flex");
+					fileFactory.createFile(document,nameSpace, fileName, "flex");
 				break;
 
 			}
@@ -96,7 +98,7 @@ public class DocumentFactory {
 			ASTDocumentFactory astDocumentFactory = new ASTDocumentFactory(documentContent);
 			document = astDocumentFactory.generateDocument();
 			if(fileName != null)		
-				FileFactory.createFile(document,nameSpace, fileName, "ast");
+				fileFactory.createFile(document,nameSpace, fileName, "ast");
 			break;
 
 		}
@@ -106,7 +108,7 @@ public class DocumentFactory {
 			ASTBehaviorDocumentFactory astBehaviorDocumentFactory = new ASTBehaviorDocumentFactory(documentContent);
 			document = astBehaviorDocumentFactory.generateDocument();
 			if(fileName != null)		
-				FileFactory.createFile(document,nameSpace, fileName, "jrag");
+				fileFactory.createFile(document,nameSpace, fileName, "jrag");
 			break;
 
 		}

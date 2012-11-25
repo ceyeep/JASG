@@ -13,6 +13,8 @@ package edu.utep.cs.jasg.specificationGenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -20,13 +22,20 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentFactory;
+import edu.utep.cs.jasg.specificationGenerator.documentGenerator.SpecificationGenerator;
 import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentGeneratorException;
 
 public class XMLParser {
 
 	private String nameSpace = "";
-	private DocumentFactory documentFactory;
+	private String workspace;
+	private SpecificationGenerator specificationGenerator;
+	private FileFactory fileFactory;
+
+	public XMLParser(String workspace){
+		this.workspace = workspace;
+		fileFactory = new FileFactory(workspace);
+	}
 
 	//TODO: create sub-parsing of elements (e.g. parsing rules) pass List to methods.
 	/** Parser XML file. */
@@ -36,11 +45,16 @@ public class XMLParser {
 			Document doc = (Document) builder.build(file);
 			Element root = doc.getRootElement();
 
-			//create a new namespace
 			nameSpace = root.getChild("nameSpace").getText();
-			FileFactory.createDirectory(nameSpace);
-			documentFactory = new DocumentFactory(nameSpace);
 
+			//TODO: should I replace all files? Like compiling new files
+			//check existing name spaces
+			if(!Files.exists(Paths.get(workspace+File.separator+nameSpace)))
+			{
+				fileFactory.createDirectory(nameSpace);
+			}
+			
+			specificationGenerator = new SpecificationGenerator(fileFactory,nameSpace);
 
 			//get root element declarations
 			Element parserElement = root.getChild("parser");
@@ -51,18 +65,18 @@ public class XMLParser {
 
 			Element ASTBehaviorElement = root.getChild("ASTBehavior");
 
-			//parse element
+			//parse root elements (document specifications)
 			if(parserElement != null)
-				parseElement("parser",parserElement);
+				parseRootElement("parser",parserElement);
 
 			if(scannerElement != null)
-				parseElement("scanner",scannerElement);
+				parseRootElement("scanner",scannerElement);
 
 			if(ASTNodeElement != null)
-				parseElement("AST",ASTNodeElement);
+				parseRootElement("AST",ASTNodeElement);
 
 			if(ASTBehaviorElement != null)
-				parseElement("ASTBehavior",ASTBehaviorElement);
+				parseRootElement("ASTBehavior",ASTBehaviorElement);
 
 
 		} catch (IOException io) {
@@ -73,12 +87,12 @@ public class XMLParser {
 	}
 
 	/** Parse element. */
-	private void parseElement(String type, Element element){
+	private void parseRootElement(String type, Element element){
 		System.out.println("Parsing "+type+" elements");
 		
 		try {
-			//Create a new file
-			documentFactory.createDocument(type, element);
+			//Create a new specification file
+			specificationGenerator.generateSpecification(type, element);
 			
 		} catch (DocumentGeneratorException e) {
 			e.printStackTrace();

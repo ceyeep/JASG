@@ -14,16 +14,25 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileFactory {
 
-	//TODO: Consider creating a cutomizable custom path
-	private static final String CUSTOM_PATH = "custom";
+	//TODO: Consider creating a customizable custom path
+	private String workspace;
 	
-	public static void createFile(String document, String path, String fileName, String extension) {
+	public FileFactory(String workspace){
+		this.workspace = workspace;
+	}
+	
+	//TODO: consider changing document to a Document object
+	/** Create a file from a JASG document. */
+	public void createFile(String document, String path, String fileName, String extension) {
     	//Check if current file exists
     	
-    	File file = new File(CUSTOM_PATH+File.separator+path+File.separator+fileName+"."+extension);  
+    	File file = new File(workspace+File.separator+path+File.separator+fileName+"."+extension);  
 
     	//Create new file
 		try {
@@ -51,19 +60,20 @@ public class FileFactory {
 	}
 	
 	/** Create a new directory with the specified name. */
-	public static void createDirectory(String name){
+	public void createDirectory(String name){
 		try{
-			String path = CUSTOM_PATH + File.separator+ name;
-
-			// Create one directory
-			boolean success = (new File(path)).mkdirs();
-			if (success) {
-				System.out.println("Directory: " + path + " created");
-			}  
-
+			String pathString = workspace + File.separator+ name;
+			Path path = Paths.get(pathString);
+			Files.createDirectory(path);
+			System.out.println("Directory: " +  path.toString() + " created");
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());
 		}
+	}
+	
+	/** Return current workspace. */
+	public String getWorkspace(){
+		return workspace;
 	}
 
 }

@@ -14,11 +14,22 @@ package edu.utep.cs.jasg;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
+import java.util.Scanner;
+
+//TODO: create a temp folder for unspecified workspace
+//TODO: change all / to System.separator
 
 /** Frontend provides console functions and options. */
 public abstract class Frontend {
+	public static Scanner scanner = new Scanner( System.in );
 	private String frameworkNameProperty, toolNameProperty, versionProperty, urlProperty;
+	private String workspace;
 
 	public Frontend(){
 		getProperties();
@@ -42,25 +53,12 @@ public abstract class Frontend {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	/** Print version information. */
 	public void printVersion() {
 		System.out.println(frameworkNameProperty + ": " + toolNameProperty + " " + urlProperty + " JASG Version " + versionProperty);
 	}
-	
-	/** Create a workspace. */
-	public void createWorkspace(String path){
 
-		File files = new File(path);
-		if (files.exists()) {
-			if (files.mkdirs()) {
-				System.out.println("Multiple directories are created!");
-			} else {
-				System.out.println("Failed to create multiple directories!");
-			}
-		}		
-	}
-	
 	public String getFrameworkNameProperty() {
 		return frameworkNameProperty;
 	}
@@ -72,18 +70,87 @@ public abstract class Frontend {
 	public String getUrlProperty() {
 		return urlProperty;
 	}
-	
+
 	public String getToolNameProperty(){
 		return toolNameProperty;
 	}
-	
+
+	public String getWorkspace(){
+		return workspace;
+	}
+
+	/** Create a workspace. 
+	 * @return true if file is succesfully created, false otherwise. */
+	public boolean setWorkspace(String workspace){
+		Path path = Paths.get(workspace);
+		if(!Files.exists(path))
+		{
+			System.out.println("Workspace " + path.toString() + " doesn't exist");
+			return false;
+		}
+		else
+		{
+			this.workspace = workspace;
+			System.out.println("Workspace " + path.toString() + " set");
+			return true;
+		}
+	}
+
+	/** Import a JastAdd module. */
+	public void importModule(String modulePath){
+		if(workspace.equals(""))
+			System.out.println("Set a workspace");
+		else
+		{
+			if(!Files.exists(Paths.get(modulePath)))
+				System.out.println("Path " + modulePath + " doesn't exist");
+			else
+			{
+				
+				//Copy parser .all files
+				try (DirectoryStream<Path> stream = 
+						Files.newDirectoryStream(Paths.get(modulePath+File.separator+"parser"), "*.{all}")) {
+					Path parserPath = Paths.get(workspace+File.separator+"parser");
+					if(!Files.exists(parserPath))
+						Files.createDirectories(parserPath);
+
+					for (Path entry: stream) {
+						Files.copy(entry, parserPath.resolve(entry.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+						System.out.println(entry.getFileName());
+					}
+
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}	
+
+				//Copy AST files
+				try (DirectoryStream<Path> stream = 
+						Files.newDirectoryStream(Paths.get(modulePath+File.separator+"AST"), "*.java")) {
+					Path astPath = Paths.get(workspace+File.separator+"AST");
+					if(!Files.exists(astPath))
+						Files.createDirectories(astPath);
+
+					for (Path entry: stream) {
+						Files.copy(entry, astPath.resolve(entry.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+						System.out.println(entry.getFileName());
+					}
+
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	/** Print tool basic usage information. */
 	public abstract void printUsage(); 
 
 	/** Define tool name property. */
 	public abstract String defineToolNameProperty();
-	
+
 	/** Process options. */
 	public abstract void processOptions(String arg);
-	
+
 }

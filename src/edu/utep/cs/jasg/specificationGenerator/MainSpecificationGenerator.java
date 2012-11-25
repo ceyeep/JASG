@@ -21,7 +21,8 @@ public class MainSpecificationGenerator  extends Frontend{
 	public static void main(String[] args){
 
 		MainSpecificationGenerator main = new MainSpecificationGenerator(args);
-		main.createWorkspace("C:\\asgasgasdg\\LO\\SHO\\sHo");
+		//main.setWorkspace("C:/JASGTEST/CJC2");
+		//main.importModule("C:/Users/Yeep/Desktop/StateMachine");
 	}
 
 	/** Main checker constructor. */
@@ -31,14 +32,35 @@ public class MainSpecificationGenerator  extends Frontend{
 		if(args.length > 0)
 		{
 			String arg = args[0];
+
+			//Process options
 			if(arg.startsWith("-"))
 				processOptions(arg);
+			//Process xml file
 			else{
-				//Process file
-				File file = new File(arg);
-				//Parse file
-				XMLParser xmlParser = new XMLParser();
-				xmlParser.parse(file);
+				String workspace = "";
+				//Check if workspace was specified in command line
+				if(args.length > 1){
+					if(args[1] != null){
+						workspace = args[1];
+					}
+				}
+				
+				//Check if a workspace was specified
+				if(workspace.equals("")){
+					System.out.print( "Specify worskapce: " );
+
+					workspace = scanner.nextLine();
+					
+				}
+				
+				//Check if workspace is valid. If does, parse input file.
+				if(setWorkspace(workspace)){
+					File file = new File(arg);
+					//Parse file
+					XMLParser xmlParser = new XMLParser(workspace);
+					xmlParser.parse(file);
+				}
 			}
 		}
 		else
