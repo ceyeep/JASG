@@ -14,17 +14,29 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import static java.nio.file.FileVisitResult.*;
 
 public class FileFactory {
 
-	//TODO: Consider creating a customizable custom path
 	private String workspace;
 	
 	public FileFactory(String workspace){
 		this.workspace = workspace;
+	}
+	
+	public FileFactory(Path workspace){
+		this.workspace = workspace.toString();
+	}
+	
+	public void createFile(String document, Path path, String fileName, String extension){
+		String pathString = path.toString();
+		createFile(document,pathString,fileName,extension);
 	}
 	
 	//TODO: consider changing document to a Document object
@@ -48,28 +60,74 @@ public class FileFactory {
 
 			  //Write document in file
 	          out.write(document);
-
+	          System.out.println("File has been created: " + file.getAbsolutePath());
 			  //Close the output stream
 			  out.close();
 			  }catch (Exception e){//Catch exception if any
-			  System.err.println("Error: " + e.getMessage());
+			  System.err.println("Error creating file: " + e.getMessage());
 		}
 		
-		System.out.println("File has been created: " + file.getAbsolutePath());
+		
 		
 	}
 	
-	/** Create a new directory with the specified name. */
+	/** Create a new directory in the current workspace with the specified name. */
 	public void createDirectory(String name){
 		try{
 			String pathString = workspace + File.separator+ name;
 			Path path = Paths.get(pathString);
 			Files.createDirectory(path);
-			System.out.println("Directory: " +  path.toString() + " created");
+			System.out.println("Directory: " +  path + " created");
 		}catch (Exception e){//Catch exception if any
-			System.err.println("Error: " + e.getMessage());
+			System.err.println("Error creating directory: " + e.getMessage());
 		}
 	}
+	
+	/** Create a new directory in the current workspace with the specified name. */
+	public void createDirectory(Path path){
+		createDirectory(path.toString());
+	}
+	
+	/** Delete directory and files from workspace. */
+	public void deleteDirectory(String name){
+		String pathString = workspace + File.separator+ name;
+		Path path = Paths.get(pathString);
+		try {
+		  Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+		 
+		      @Override
+		      public FileVisitResult visitFile(Path file,
+		              BasicFileAttributes attrs) throws IOException {
+		 
+		          System.out.println("Deleting file: " + file);
+		          Files.delete(file);
+		          return CONTINUE;
+		      }
+		 
+		      @Override
+		      public FileVisitResult postVisitDirectory(Path dir,
+		              IOException exc) throws IOException {
+		 
+		          System.out.println("Deleting dir: " + dir);
+		          if (exc == null) {
+		              Files.delete(dir);
+		              return CONTINUE;
+		          } else {
+		              throw exc;
+		          }
+		      }
+		 
+		  });
+		} catch (IOException e) {
+		  e.printStackTrace();
+		}
+	}
+	
+	/** Delete directory from workspace. */
+	public void deleteDirectory(Path path){
+		deleteDirectory(path.toString());
+	}
+	
 	
 	/** Return current workspace. */
 	public String getWorkspace(){
