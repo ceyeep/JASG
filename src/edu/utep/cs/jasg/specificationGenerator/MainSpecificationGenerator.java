@@ -82,16 +82,18 @@ public class MainSpecificationGenerator  extends Frontend{
 	}
 
 	/** Define tool name property. */
-	public String defineToolNameProperty() {
+	public String toolNameProperty() {
 		return "jasg.SpecGenTool";
 	}
 
 	/** Print basic tool usage. */
 	public void printUsage() {
 		System.out.println(
-				getFrameworkNameProperty() + ": " + getToolNameProperty() + "\n\n" +
-						"Usage example: jar "+ getToolNameProperty() + "<options>\n" +
-						"or: jar MainSpecificationGenetaor <JASGXMLFile.xml>\n" +
+						getFrameworkNameProperty() + ": " + getToolNameProperty() + "\n\n" +
+						"Usage example: jar " + getToolNameProperty() + " <options>\n" +
+						"or: jar " + getToolNameProperty() +"<JASGXMLFile.xml>\n" +
+						"or: jar " + getToolNameProperty() +"<JASGXMLFile.xml> <workspace path>\n" +
+						"  options:\n" +
 						"  -help \t\t Print a synopsis of standard options\n" +
 						"  -version \t\t Print version information\n"
 				);

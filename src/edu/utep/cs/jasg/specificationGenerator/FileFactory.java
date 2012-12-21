@@ -65,10 +65,7 @@ public class FileFactory {
 			  out.close();
 			  }catch (Exception e){//Catch exception if any
 			  System.err.println("Error creating file: " + e.getMessage());
-		}
-		
-		
-		
+		}	
 	}
 	
 	/** Create a new directory in the current workspace with the specified name. */
@@ -94,7 +91,7 @@ public class FileFactory {
 		Path path = Paths.get(pathString);
 		try {
 		  Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-		 
+		 //TODO: delete attrs
 		      @Override
 		      public FileVisitResult visitFile(Path file,
 		              BasicFileAttributes attrs) throws IOException {

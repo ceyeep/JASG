@@ -22,8 +22,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 import java.util.Scanner;
 
-//TODO: create a temp folder for unspecified workspace
-//TODO: change all / to System.separator
 
 /** Frontend provides console functions and options. */
 public abstract class Frontend {
@@ -45,7 +43,7 @@ public abstract class Frontend {
 
 			//get the property value and print it out
 			frameworkNameProperty = prop.getProperty("jasg.JASG");
-			toolNameProperty = prop.getProperty(defineToolNameProperty());
+			toolNameProperty = prop.getProperty(toolNameProperty());
 			urlProperty = prop.getProperty("jasg.URL");
 			versionProperty  = prop.getProperty("jasg.Version");
 
@@ -56,7 +54,7 @@ public abstract class Frontend {
 
 	/** Print version information. */
 	public void printVersion() {
-		System.out.println(frameworkNameProperty + ": " + toolNameProperty + " " + urlProperty + " JASG Version " + versionProperty);
+		System.out.println(frameworkNameProperty + ": " + toolNameProperty + " " + urlProperty + " JASG Version " + versionProperty +"\n");
 	}
 
 	public String getFrameworkNameProperty() {
@@ -148,7 +146,7 @@ public abstract class Frontend {
 	public abstract void printUsage(); 
 
 	/** Define tool name property. */
-	public abstract String defineToolNameProperty();
+	public abstract String toolNameProperty();
 
 	/** Process options. */
 	public abstract void processOptions(String arg);
