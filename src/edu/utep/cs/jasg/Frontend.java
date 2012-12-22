@@ -13,6 +13,7 @@ package edu.utep.cs.jasg;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -28,18 +29,25 @@ import edu.utep.cs.jasg.specificationGenerator.XMLParser;
 public class Frontend {
 	public static Scanner scanner = new Scanner( System.in );
 	private String frameworkNameProperty, toolNameProperty, versionProperty, urlProperty;
-	private String workspace;
+	private String workspace, workspaceProperty;
 
 	public static void main(String[] args){
 		Frontend frontend = new Frontend();
 	}
-
+	
 	public Frontend(){
 		String option = "";
 
+		//Load configuration properties
 		getProperties();
-		//TODO: save workspace path in properties. 
-
+		if(!workspaceProperty.equals("")){
+			System.out.println("A previous workspace \"" + workspaceProperty + "\" was identifed");
+			System.out.println("Do you want to use the same workspace? (yes, or no to specify a new one)");
+			String workspaceOption = scanner.nextLine();
+			if(workspaceOption.equals("yes"))
+				workspace = workspaceProperty;			
+		}
+ 
 		printVersion();
 
 		//Set workspace
@@ -49,6 +57,8 @@ public class Frontend {
 				workspace = scanner.nextLine();
 			}while(!setWorkspace(workspace));
 		}
+		
+		System.out.println("Using \"" + getWorkspace() + "\"" + " workspace\n");
 
 		printOptions();
 
@@ -64,21 +74,27 @@ public class Frontend {
 
 	/** Get properties from properties file. */
 	private void getProperties(){
+
+		
 		try {
-			Properties prop = new Properties();
+			Properties defaultProps = new Properties();
 			//load a properties file
-			prop.load(new FileInputStream("JASG.properties"));
+			defaultProps.load(new FileInputStream("JASG.properties"));
+			
+			Properties applicationProps = new Properties(defaultProps);
+			applicationProps.load(new FileInputStream("Workspace.properties"));
 
 			//get the property value and print it out
-			frameworkNameProperty = prop.getProperty("jasg.JASG");
-			urlProperty = prop.getProperty("jasg.URL");
-			versionProperty  = prop.getProperty("jasg.Version");
+			frameworkNameProperty = applicationProps.getProperty("jasg.JASG");
+			urlProperty = applicationProps.getProperty("jasg.URL");
+			versionProperty  = applicationProps.getProperty("jasg.Version");
+			
+			workspaceProperty = applicationProps.getProperty("jasg.Workspace");
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
-
 
 
 	/** Create a workspace. 
@@ -93,13 +109,27 @@ public class Frontend {
 		else
 		{
 			this.workspace = workspace;
+			setWorkspaceProperty(workspace);
 			System.out.println("Workspace " + "\"" + path.toString() + "\"" + " set");
 			return true;
 		}
 	}
+	
+	/** Store workspace in properties. */
+	private void setWorkspaceProperty(String workspace){
+    	Properties prop = new Properties();
+    	try {
+    		prop.setProperty("jasg.Workspace", workspace);
+ 
+    		prop.store(new FileOutputStream("Workspace.properties"), null);
+    	} catch (IOException ex) {
+    		ex.printStackTrace();
+        }
+	}
 
+	//TODO: copy all files of a module?
 	/** Import a JastAdd module. */
-	public void importModule(String modulePath){
+	private void importModule(String modulePath){
 		if(workspace.equals(""))
 			System.out.println("Set a workspace");
 		else
@@ -108,46 +138,44 @@ public class Frontend {
 				System.out.println("Path " + modulePath + " doesn't exist");
 			else
 			{
-
-				//Copy parser .all files
-				try (DirectoryStream<Path> stream = 
-						Files.newDirectoryStream(Paths.get(modulePath+File.separator+"parser"), "*.{all}")) {
-					Path parserPath = Paths.get(workspace+File.separator+"parser");
-					if(!Files.exists(parserPath))
-						Files.createDirectories(parserPath);
-
-					for (Path entry: stream) {
-						Files.copy(entry, parserPath.resolve(entry.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-						System.out.println(entry.getFileName());
-					}
-
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				}	
-
+				//Copy main module files
+				copyFiles(modulePath,workspace,"*.{jrag,jadd,flex,xml,ast,parser}");
+				
+				//Copy parser files
+				copyFiles(modulePath+File.separator+"parser",workspace+File.separator+"parser","*.{all,parser}");
+				
+				//Copy scanner files
+				copyFiles(modulePath+File.separator+"scanner",workspace+File.separator+"scanner","*.{flex}");
+				
 				//Copy AST files
-				try (DirectoryStream<Path> stream = 
-						Files.newDirectoryStream(Paths.get(modulePath+File.separator+"AST"), "*.java")) {
-					Path astPath = Paths.get(workspace+File.separator+"AST");
-					if(!Files.exists(astPath))
-						Files.createDirectories(astPath);
-
-					for (Path entry: stream) {
-						Files.copy(entry, astPath.resolve(entry.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-						System.out.println(entry.getFileName());
-					}
-
-
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				copyFiles(modulePath+File.separator+"AST",workspace+File.separator+"AST","*.{java}");
+				
+				
 			}
+		}
+	}
+	
+	/** Copy files. */
+	private void copyFiles(String source, String target, String glob){
+
+		try (DirectoryStream<Path> stream = 
+				Files.newDirectoryStream(Paths.get(source), glob)) {
+			Path targetPath = Paths.get(target);
+			if(!Files.exists(targetPath))
+				Files.createDirectories(targetPath);
+
+			for (Path entry: stream) {
+				Files.copy(entry, targetPath.resolve(entry.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+				System.out.println(entry.getFileName());
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	/** Process options. */
-	public void processOptions(String arg){
+	private void processOptions(String arg){
 		String[] args = arg.split(" ");
 		switch(args[0]){
 		case "parse":
@@ -177,7 +205,7 @@ public class Frontend {
 	}
 	
 	/** Process option argument. */
-	public String processArgument(String[] args){
+	private String processArgument(String[] args){
 		String optionArg = "";
 		if(args.length > 1){
 			if(args[1] != null){
@@ -192,7 +220,7 @@ public class Frontend {
 		return optionArg;
 	}
 	/** Parse XML spec. */
-	public void parse(String fileName){
+	private void parse(String fileName){
 		XMLParser xmlParser = new XMLParser(workspace);
 		xmlParser.parse(fileName);
 	}
