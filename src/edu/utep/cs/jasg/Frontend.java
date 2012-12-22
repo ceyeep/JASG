@@ -190,6 +190,10 @@ public class Frontend {
 		case "get-workspace":
 			System.out.println(getWorkspace());
 			break;
+		case "clean-workspace-property":
+			setWorkspaceProperty("");
+			System.out.println("Workspace property cleared");
+			break;
 		case "help":
 			printOptions();
 			break;
@@ -245,6 +249,7 @@ public class Frontend {
 						"  -import <JastAdd module path>\t\tImport a JastAdd module into current workspace\n" +
 						"  -set-workspace <workspace path> \tSet project workspace\n" +
 						"  -get-workspace\t\t\tView current workspace\n" +
+						"  -clean-workspace-property\t\tResets workspace property file\n" +
 						"  -help\t\t\t\t\tPrint a synopsis of standard options\n" +
 						"  -version\t\t\t\tPrint version information\n\n" +
 						"  -exit\t\t\t\t\tExit application\n"
