@@ -39,50 +39,54 @@ public class XMLParser {
 
 	//TODO: create sub-parsing of elements (e.g. parsing rules) pass List to methods.
 	/** Parser XML file. */
-	public void parse(File file){
-		try {
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = (Document) builder.build(file);
-			Element root = doc.getRootElement();
-
-			nameSpace = root.getChild("nameSpace").getText();
-
-			//TODO: should I replace all files? Like compiling new files
-			//check existing name spaces
-			if(!Files.exists(Paths.get(workspace+File.separator+nameSpace)))
-			{
-				fileFactory.createDirectory(nameSpace);
-			}
+	public void parse(String fileName){
+		File file = new File(fileName);
+		if(file.exists() && DOMValidateDTD.validateXML(fileName)){
 			
-			specificationGenerator = new SpecificationGenerator(fileFactory,nameSpace);
-
-			//get root element declarations
-			Element parserElement = root.getChild("parser");
-
-			Element scannerElement = root.getChild("scanner");
-
-			Element ASTNodeElement = root.getChild("AST");
-
-			Element ASTBehaviorElement = root.getChild("ASTBehavior");
-
-			//parse root elements (document specifications)
-			if(parserElement != null)
-				parseRootElement("parser",parserElement);
-
-			if(scannerElement != null)
-				parseRootElement("scanner",scannerElement);
-
-			if(ASTNodeElement != null)
-				parseRootElement("AST",ASTNodeElement);
-
-			if(ASTBehaviorElement != null)
-				parseRootElement("ASTBehavior",ASTBehaviorElement);
-
-
-		} catch (IOException io) {
-			System.out.println(io.getMessage());
-		} catch (JDOMException jdomex) {
-			System.out.println(jdomex.getMessage());
+			try {
+				SAXBuilder builder = new SAXBuilder();
+				Document doc = (Document) builder.build(file);
+				Element root = doc.getRootElement();
+	
+				nameSpace = root.getChild("nameSpace").getText();
+	
+				//TODO: should I replace all files? Like compiling new files
+				//check existing name spaces
+				if(!Files.exists(Paths.get(workspace+File.separator+nameSpace)))
+				{
+					fileFactory.createDirectory(nameSpace);
+				}
+				
+				specificationGenerator = new SpecificationGenerator(fileFactory,nameSpace);
+	
+				//get root element declarations
+				Element parserElement = root.getChild("parser");
+	
+				Element scannerElement = root.getChild("scanner");
+	
+				Element ASTNodeElement = root.getChild("AST");
+	
+				Element ASTBehaviorElement = root.getChild("ASTBehavior");
+	
+				//parse root elements (document specifications)
+				if(parserElement != null)
+					parseRootElement("parser",parserElement);
+	
+				if(scannerElement != null)
+					parseRootElement("scanner",scannerElement);
+	
+				if(ASTNodeElement != null)
+					parseRootElement("AST",ASTNodeElement);
+	
+				if(ASTBehaviorElement != null)
+					parseRootElement("ASTBehavior",ASTBehaviorElement);
+	
+	
+			} catch (IOException io) {
+				System.out.println(io.getMessage());
+			} catch (JDOMException jdomex) {
+				System.out.println(jdomex.getMessage());
+			}
 		}
 	}
 

@@ -22,17 +22,45 @@ import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 import java.util.Scanner;
 
+import edu.utep.cs.jasg.specificationGenerator.XMLParser;
 
-/** Frontend provides console functions and options. */
-public abstract class Frontend {
+/** Main program of JASG. */
+public class Frontend {
 	public static Scanner scanner = new Scanner( System.in );
 	private String frameworkNameProperty, toolNameProperty, versionProperty, urlProperty;
 	private String workspace;
 
-	public Frontend(){
-		getProperties();
+	public static void main(String[] args){
+		Frontend frontend = new Frontend();
 	}
 
+	public Frontend(){
+		String option = "";
+
+		getProperties();
+		//TODO: save workspace path in properties. 
+
+		printVersion();
+
+		//Set workspace
+		if(workspace == null){
+			do{
+				System.out.print( "Please specify a worskapce: " );
+				workspace = scanner.nextLine();
+			}while(!setWorkspace(workspace));
+		}
+
+		printOptions();
+
+		//Enable command prompt
+		while(true){
+			System.out.print("JASG> ");
+			option = scanner.nextLine();
+			if(option.equals("exit"))
+				break;
+			processOptions(option);
+		}
+	}
 
 	/** Get properties from properties file. */
 	private void getProperties(){
@@ -43,7 +71,6 @@ public abstract class Frontend {
 
 			//get the property value and print it out
 			frameworkNameProperty = prop.getProperty("jasg.JASG");
-			toolNameProperty = prop.getProperty(toolNameProperty());
 			urlProperty = prop.getProperty("jasg.URL");
 			versionProperty  = prop.getProperty("jasg.Version");
 
@@ -52,33 +79,10 @@ public abstract class Frontend {
 		}
 	}
 
-	/** Print version information. */
-	public void printVersion() {
-		System.out.println(frameworkNameProperty + ": " + toolNameProperty + " " + urlProperty + " JASG Version " + versionProperty +"\n");
-	}
 
-	public String getFrameworkNameProperty() {
-		return frameworkNameProperty;
-	}
-
-	public String getVersionProperty() {
-		return versionProperty;
-	}
-
-	public String getUrlProperty() {
-		return urlProperty;
-	}
-
-	public String getToolNameProperty(){
-		return toolNameProperty;
-	}
-
-	public String getWorkspace(){
-		return workspace;
-	}
 
 	/** Create a workspace. 
-	 * @return true if file is succesfully created, false otherwise. */
+	 * @return true if file is successfully created, false otherwise. */
 	public boolean setWorkspace(String workspace){
 		Path path = Paths.get(workspace);
 		if(!Files.exists(path))
@@ -89,7 +93,7 @@ public abstract class Frontend {
 		else
 		{
 			this.workspace = workspace;
-			System.out.println("Workspace " + path.toString() + " set");
+			System.out.println("Workspace " + "\"" + path.toString() + "\"" + " set");
 			return true;
 		}
 	}
@@ -104,7 +108,7 @@ public abstract class Frontend {
 				System.out.println("Path " + modulePath + " doesn't exist");
 			else
 			{
-				
+
 				//Copy parser .all files
 				try (DirectoryStream<Path> stream = 
 						Files.newDirectoryStream(Paths.get(modulePath+File.separator+"parser"), "*.{all}")) {
@@ -142,13 +146,81 @@ public abstract class Frontend {
 		}
 	}
 
-	/** Print tool basic usage information. */
-	public abstract void printUsage(); 
-
-	/** Define tool name property. */
-	public abstract String toolNameProperty();
-
 	/** Process options. */
-	public abstract void processOptions(String arg);
+	public void processOptions(String arg){
+		String[] args = arg.split(" ");
+		switch(args[0]){
+		case "parse":
+			parse(processArgument(args));
+			break;
+		case "import":
+			importModule(processArgument(args));
+			break;
+		case "set-workspace":
+			setWorkspace(processArgument(args));			
+			break;
+		case "get-workspace":
+			System.out.println(getWorkspace());
+			break;
+		case "help":
+			printOptions();
+			break;
+		case "version":
+			printVersion();
+			break;
+
+		default: 
+			System.out.println("Invalid option");
+			printOptions();
+		break;
+		}
+	}
+	
+	/** Process option argument. */
+	public String processArgument(String[] args){
+		String optionArg = "";
+		if(args.length > 1){
+			if(args[1] != null){
+				optionArg = args[1];
+			}
+		}
+
+		if(optionArg.equals("")){
+			System.out.print("Specify " + args[0] + " option argument: " );
+			optionArg = scanner.nextLine();
+		}
+		return optionArg;
+	}
+	/** Parse XML spec. */
+	public void parse(String fileName){
+		XMLParser xmlParser = new XMLParser(workspace);
+		xmlParser.parse(fileName);
+	}
+
+	/** Return workspace location. */
+	public String getWorkspace(){
+		return workspace;
+	}
+	
+
+
+	/** Tool information. */
+	public void printVersion() {
+		System.out.println(frameworkNameProperty  + " " + urlProperty + " Version " + versionProperty +"\n");
+	}
+
+	/** Print basic tool usage. */
+	public void printOptions() {
+		System.out.println(
+				"Options:\n" +
+						"  -parse <JASGXMLFile.xml>\t\tParse a JASG specification file\n" +
+						"  -import <JastAdd module path>\t\tImport a JastAdd module into current workspace\n" +
+						"  -set-workspace <workspace path> \tSet project workspace\n" +
+						"  -get-workspace\t\t\tView current workspace\n" +
+						"  -help\t\t\t\t\tPrint a synopsis of standard options\n" +
+						"  -version\t\t\t\tPrint version information\n\n" +
+						"  -exit\t\t\t\t\tExit application\n"
+				);
+	}
 
 }
