@@ -3,3 +3,6 @@ Future work:
 - Change name of elements in jast.dtd to make it consistent (e.g. se_, pe_, etc)
 - Use properties for template classes (e.g. BeaverParserFactory)
 - GUI support
+- Generating neccessary JastAdd attributes to implement in 
+	aspects (currently RagDoll is enough to learn about
+	needed attributes)

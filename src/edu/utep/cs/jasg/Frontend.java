@@ -15,11 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -46,6 +44,7 @@ public class Frontend {
 		
 		printVersion();
 		
+		//Check if there exists a workspace property
 		if(!workspaceProperty.equals("")){
 			System.out.println("A previous workspace \"" + workspaceProperty + "\" was identifed");
 			System.out.println("Do you want to use the same workspace? (yes, or no to specify a new one)");
@@ -54,14 +53,6 @@ public class Frontend {
 				workspace = workspaceProperty;			
 		}
 		
-		if(!targetModuleProperty.equals("")){
-			System.out.println("A previous target module \"" + targetModuleProperty + "\" was identifed");
-			System.out.println("Do you want to use the same target module? (yes, or no to specify a new one)");
-			String workspaceOption = scanner.nextLine();
-			if(workspaceOption.equals("yes"))
-				targetModule = targetModuleProperty;			
-		}
- 
 		//Set workspace
 		if(workspace == null){
 			do{
@@ -70,6 +61,15 @@ public class Frontend {
 			}while(!setWorkspace(workspace));
 		}
 		
+		//Check if there exists a target module property
+		if(!targetModuleProperty.equals("")){
+			System.out.println("A previous target module \"" + targetModuleProperty + "\" was identifed");
+			System.out.println("Do you want to use the same target module? (yes, or no to specify a new one)");
+			String workspaceOption = scanner.nextLine();
+			if(workspaceOption.equals("yes"))
+				targetModule = targetModuleProperty;			
+		}
+ 
 		//Set target module
 		if(targetModule == null){
 			do{
@@ -96,7 +96,6 @@ public class Frontend {
 	/** Get properties from properties file. */
 	private void getProperties(){
 
-		
 		try {
 			Properties defaultProps = new Properties();
 			//load a properties file
@@ -123,7 +122,7 @@ public class Frontend {
 	}
 
 
-	/** Create a workspace. */
+	/** Set workspace path. */
 	public boolean setWorkspace(String workspace){
 		Path path = Paths.get(workspace);
 		if(!Files.exists(path))
@@ -133,7 +132,7 @@ public class Frontend {
 		}
 		else
 		{
-			this.workspace = workspace;
+			this.workspace = path.toString();
 			setWorkspaceProperty(workspace);
 			System.out.println("Workspace " + "\"" + path.toString() + "\"" + " set");
 			return true;
@@ -152,7 +151,7 @@ public class Frontend {
         }
 	}
 	
-	/** Create a target module. */
+	/** Set target module path. */
 	public boolean setTargetModule(String targetModule){
 		Path path = Paths.get(targetModule);
 		if(!Files.exists(path))
@@ -162,13 +161,12 @@ public class Frontend {
 		}
 		else
 		{
-			this.targetModule = targetModule;
+			this.targetModule = path.toString();
 			setTargetModuleProperty(targetModule);
 			System.out.println("Target module " + "\"" + path.toString() + "\"" + " set");
 			return true;
 		}
 	}
-	
 	
 	
 	/** Store targetModule in properties. */
@@ -257,13 +255,13 @@ public class Frontend {
 		MainAPIGenerator apiGenerator = new MainAPIGenerator(workspace);
 		
 		do{
-			System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all: " );
+			System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all): " );
 			parserName = scanner.nextLine();
 			parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
 		}while(!checkFileExists(parserName));
 		
 		do{
-			System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex: " );
+			System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex): " );
 			scannerName = scanner.nextLine();
 			scannerName = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
 		}while(!checkFileExists(scannerName));
