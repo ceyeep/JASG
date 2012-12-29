@@ -39,25 +39,21 @@ import org.jdom2.output.XMLOutputter;
 public class APIGenerator {
 	
 	private Document doc;
-	private String fileName = "file";
+	private String  outputPath, fileName;
 	//private BeaverSpecificationParser parserModel;
 	private JastAddParserReader parserModel;
 	private JFlexSpecificationParser scannerModel;
 	
 	/** Main constructor, takes the output name of the XML file */
-	public APIGenerator(String fileName, JastAddParserReader parserModel, JFlexSpecificationParser scannerModel){
+	public APIGenerator(String outputPath, String fileName, 
+			JastAddParserReader parserModel, JFlexSpecificationParser scannerModel){
+		this.outputPath = outputPath;
 		this.fileName = fileName;
 		this.parserModel = parserModel;
 		this.scannerModel = scannerModel;
 	}
 	
-	/** Secondary constructor, takes the name of the parser model to name the XML file */
-	public APIGenerator(JastAddParserReader parserModel, JFlexSpecificationParser scannerModel){
-		this.fileName = parserModel.getFileName();
-		this.parserModel = parserModel;
-		this.scannerModel = scannerModel;
-	}
-	
+
 	/** Generates a XML document using JDom */
 	public void generateXMLDocument(){
 		Element parserAPI = new Element("parser_api");
@@ -165,14 +161,15 @@ public class APIGenerator {
 			ProcessingInstruction pi = new ProcessingInstruction( "xml-stylesheet",piMap );
 		
 			doc.getContent().add( 0, pi );
-			xmlOutput.output(doc, new FileWriter("xml"+File.separator+fileName+".xml"));
-		 
+			xmlOutput.output(doc, new FileWriter(outputPath+File.separator+fileName+".xml"));
+			
+			System.out.println("File \"" + outputPath+File.separator+fileName+".xml" + "\" created");
 				
 		} catch (IOException io) {
-			System.out.println(io.getMessage());
+			System.err.println("IOException in APIGenerator: " + io.getMessage());
 		}
 		  
-		System.out.println("File " + "xml"+File.separator+fileName+".xml" + " created");
+		
 	}
 	
 	/** Creates a HTML file based on the XSL and XML files, using a DOM transformer */

@@ -23,12 +23,13 @@ public class JFlexSpecificationParser {
 	
 	private HashMap<String,ArrayList<String>> tokens = new HashMap<String,ArrayList<String>>();
 	private Scanner scanner;
-	private String fileName = "file";
+	private String filePath = "file";
 
 	/** Main constructor */
-	public JFlexSpecificationParser(String fileName){
-		this.fileName = fileName;
-		File file = new File("scanner"+File.separator+ fileName+".flex");
+	public JFlexSpecificationParser(String filePath){
+		this.filePath = filePath;
+				
+		File file = new File(filePath);
 		parseFile(file);
 	}
 	
@@ -39,7 +40,7 @@ public class JFlexSpecificationParser {
 	
 	/** Get name of the JFlex specification file */
 	public String getFileName(){
-		return fileName;
+		return filePath;
 	}
 	
 	/** Parse JFlex specification file. Get tokens and symbols */
@@ -52,9 +53,9 @@ public class JFlexSpecificationParser {
 				line = scanner.nextLine();
 				lineParser(line);
 			}
-			
+			 System.out.println(filePath + " parsed");
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.err.println("FileNotFoundException in JFlexSpecificationParser: " + e.getMessage());
 		}
 		//printHashTableWithList(tokens);
 		

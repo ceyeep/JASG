@@ -23,25 +23,26 @@ import AST.ASTNode;
 import AST.Grammar;
 import beaver.Parser.Exception;
 
+/** Decompose a JastAdd parser file into its basic components. */
 public class JastAddParserReader {
 	
 	private ArrayList<String> terminals = new ArrayList<String>();
 	private HashMap<String,String> ruleTypes = new HashMap<String,String>();
 	private HashMap<String,ArrayList<String>> rules = new HashMap<String,ArrayList<String>>();
-	private String fileName = "";
+	private String filePath = "";
 	private Grammar grammar;
 	
 	/** Main constructor */
-	public JastAddParserReader(String fileName){
-		this.fileName = fileName;
+	public JastAddParserReader(String filePath){
+		this.filePath = filePath;
 		parseFile();
 	}
 	
 	/** Parser beaver specification file. Creates a Grammar object  */
 	private void parseFile(){
 		try {
-
-			String source = "parser"+File.separator+fileName+".all";
+			//TODO: check that file is a valid parser file
+			String source = filePath;
 
 			ASTNode.sourceName = source;
 			GrammarScanner scanner = new GrammarScanner(new FileReader(source));
@@ -52,20 +53,20 @@ public class JastAddParserReader {
 			terminals = grammar.getTerminals();
 			ruleTypes = grammar.getRulesNames();
 			rules = grammar.getRules();
-	        
+	        System.out.println(filePath + " parsed");
 			
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
+			System.err.println("IOException in JastAddParserReader: "+ e.getMessage());
+			//System.exit(1);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
-			System.exit(1);
+			//System.exit(1);
 		}
 	}
 
 	/** Get name of the beaver specification file */
-	public String getFileName(){
-		return fileName;
+	public String getFilePath(){
+		return filePath;
 	}
 	
 	/** Get list of terminals specified by the scanner specification file */

@@ -11,21 +11,30 @@
  ******************************************************************************/
 package edu.utep.cs.jasg.apiGenerator;
 
-public class MainAPIGenerator {
+import java.io.File;
 
-	/**
-	 * Initiate scanner and parser models and convert models to a XML file
-	 */
-	public static void main(String[] args) {
-		JastAddParserReader parserModel = new JastAddParserReader("temp");
-		JFlexSpecificationParser scannerModel = new JFlexSpecificationParser("StateMachineScanner");
-		//JastAddParserReader parserModel = new JastAddParserReader("JavaParser");
-		//JFlexSpecificationParser scannerModel = new JFlexSpecificationParser("JavaScanner");
-		APIGenerator generator = new APIGenerator(parserModel, scannerModel);
+import edu.utep.cs.jasg.FileFactory;
+
+public class MainAPIGenerator {
+	private String workspace;
+	private FileFactory fileFactory;
+	
+	public MainAPIGenerator(String workspace){
+		this.workspace = workspace;
+		fileFactory = new FileFactory(workspace);
+	}
+	
+	
+	public void generateDoc(String fileName, String parserPath, String scannerPath){
+		
+		JastAddParserReader parserModel = new JastAddParserReader(parserPath);
+		JFlexSpecificationParser scannerModel = new JFlexSpecificationParser(scannerPath);
+		fileFactory.createDirectory("doc");
+		fileFactory.copyFile("xml"+File.separator+"stylesheet.xsl", "doc"+File.separator+"stylesheet.xsl");
+		fileFactory.copyFile("xml"+File.separator+"style.css", "doc"+File.separator+"style.css");
+		APIGenerator generator = new APIGenerator(workspace+File.separator+"doc",fileName,parserModel, scannerModel);
 		generator.generateXMLDocument();
 		//generator.executeXSL();
-
-		
-	}
+	}	
 
 }

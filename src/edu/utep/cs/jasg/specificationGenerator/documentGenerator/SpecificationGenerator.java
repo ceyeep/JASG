@@ -13,7 +13,7 @@ package edu.utep.cs.jasg.specificationGenerator.documentGenerator;
 
 import org.jdom2.Element;
 
-import edu.utep.cs.jasg.specificationGenerator.FileFactory;
+import edu.utep.cs.jasg.FileFactory;
 
 /** Creates a JastAdd specification file. */
 public class SpecificationGenerator {

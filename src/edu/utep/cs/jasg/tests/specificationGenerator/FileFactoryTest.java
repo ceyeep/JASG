@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.BeforeClass;
 
-import edu.utep.cs.jasg.specificationGenerator.FileFactory;
+import edu.utep.cs.jasg.FileFactory;
 
 /**
  * @author Yeep
@@ -73,7 +73,7 @@ public class FileFactoryTest {
 
 	/**
 	 * Test creation of a file in specified directory in workspace
-	 * {@link edu.utep.cs.jasg.specificationGenerator.FileFactory#createFile(java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
+	 * {@link edu.utep.cs.jasg.FileFactory#createFile(java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testCreateFile() {
@@ -85,7 +85,7 @@ public class FileFactoryTest {
 
 	/**
 	 * Test creation of a new directory in workspace
-	 * {@link edu.utep.cs.jasg.specificationGenerator.FileFactory#createDirectory(java.lang.String)}.
+	 * {@link edu.utep.cs.jasg.FileFactory#createDirectory(java.lang.String)}.
 	 */
 	@Test
 	public void testCreateDirectory() {

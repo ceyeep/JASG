@@ -22,6 +22,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
+import edu.utep.cs.jasg.FileFactory;
 import edu.utep.cs.jasg.specificationGenerator.documentGenerator.SpecificationGenerator;
 import edu.utep.cs.jasg.specificationGenerator.documentGenerator.DocumentGeneratorException;
 
