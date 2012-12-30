@@ -87,6 +87,7 @@ public class XMLParser {
 				System.out.println(io.getMessage());
 			} catch (JDOMException jdomex) {
 				System.out.println(jdomex.getMessage());
+
 			}
 		}
 	}
@@ -100,7 +101,7 @@ public class XMLParser {
 			specificationGenerator.generateSpecification(type, element);
 			
 		} catch (DocumentGeneratorException e) {
-			e.printStackTrace();
+			System.out.println("DocumentGeneratorException: " + e.getMessage());
 		}		
 
 	}

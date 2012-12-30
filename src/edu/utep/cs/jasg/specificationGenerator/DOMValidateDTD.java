@@ -12,10 +12,17 @@
 package edu.utep.cs.jasg.specificationGenerator;
 //import java.io.*;
 //import org.w3c.dom.*;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+//import org.w3c.dom.Document;
 import org.xml.sax.*;
 import javax.xml.parsers.*;
-import javax.xml.transform.*;
+//import javax.xml.transform.*;
 //import javax.xml.transform.dom.DOMSource;
+//import javax.xml.transform.dom.DOMSource;
+//import javax.xml.transform.stream.StreamResult;
 //import javax.xml.transform.stream.StreamResult;
 
 /** Validate XML file. */
@@ -47,17 +54,21 @@ public class DOMValidateDTD {
 					//System.exit(0);
 				}
 			});
-			//Document xmlDocument = builder.parse(new FileInputStream(fileName));
+
+			Path path = Paths.get(fileName);
+			File inputFile = new File(path.toString());
+			builder.parse(inputFile);
+			//Document xmlDocument = builder.parse(inputFile);
 			//DOMSource source = new DOMSource(xmlDocument);
 			//StreamResult result = new StreamResult(System.out);
-			TransformerFactory tf = TransformerFactory.newInstance();
-			Transformer transformer = tf.newTransformer();
-			transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "jasg.dtd");
+			//TransformerFactory tf = TransformerFactory.newInstance();
+			//Transformer transformer = tf.newTransformer();
+			//transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "jasg.dtd");
 			//transformer.transform(source, result);
 			return true;
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Exception in DOMValidteDTD: "+e.getMessage());
 			return false;
 		}
 	}

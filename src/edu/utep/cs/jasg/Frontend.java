@@ -33,7 +33,7 @@ public class Frontend {
 	private String workspace, targetModule;
 
 	public static void main(String[] args){
-		Frontend frontend = new Frontend();
+		new Frontend();
 	}
 	
 	public Frontend(){
@@ -99,13 +99,13 @@ public class Frontend {
 		try {
 			Properties defaultProps = new Properties();
 			//load a properties file
-			defaultProps.load(new FileInputStream("JASG.properties"));
+			defaultProps.load(new FileInputStream("properties"+File.separator+"JASG.properties"));
 			
 			Properties workspaceProps = new Properties(defaultProps);
-			workspaceProps.load(new FileInputStream("Workspace.properties"));
+			workspaceProps.load(new FileInputStream("properties"+File.separator+"Workspace.properties"));
 			
 			Properties targetmoduleProps = new Properties(workspaceProps);
-			targetmoduleProps.load(new FileInputStream("TargetModule.properties"));
+			targetmoduleProps.load(new FileInputStream("properties"+File.separator+"TargetModule.properties"));
 
 			//get the property value and print it out
 			frameworkNameProperty = targetmoduleProps.getProperty("jasg.JASG");
@@ -133,7 +133,7 @@ public class Frontend {
 		else
 		{
 			this.workspace = path.toString();
-			setWorkspaceProperty(workspace);
+			setWorkspaceProperty(this.workspace);
 			System.out.println("Workspace " + "\"" + path.toString() + "\"" + " set");
 			return true;
 		}
@@ -145,7 +145,7 @@ public class Frontend {
     	try {
     		prop.setProperty("jasg.Workspace", workspace);
  
-    		prop.store(new FileOutputStream("Workspace.properties"), null);
+    		prop.store(new FileOutputStream("properties"+File.separator+"Workspace.properties"), null);
     	} catch (IOException ex) {
     		ex.printStackTrace();
         }
@@ -162,7 +162,7 @@ public class Frontend {
 		else
 		{
 			this.targetModule = path.toString();
-			setTargetModuleProperty(targetModule);
+			setTargetModuleProperty(this.targetModule);
 			System.out.println("Target module " + "\"" + path.toString() + "\"" + " set");
 			return true;
 		}
@@ -175,7 +175,7 @@ public class Frontend {
     	try {
     		prop.setProperty("jasg.TargetModule", targetModule);
  
-    		prop.store(new FileOutputStream("TargetModule.properties"), null);
+    		prop.store(new FileOutputStream("properties"+File.separator+"TargetModule.properties"), null);
     	} catch (IOException ex) {
     		ex.printStackTrace();
         }
@@ -245,6 +245,12 @@ public class Frontend {
 	
 	/** Parse XML spec. */
 	private void parse(String fileName){
+		while(!checkFileExists(fileName)){
+			System.out.print( "Provide location of JASG XML specification file or type \"cancel\": " );
+			fileName = scanner.nextLine();
+			if(fileName.equals("cancel"))
+				return;
+		}
 		XMLParser xmlParser = new XMLParser(workspace);
 		xmlParser.parse(fileName);
 	}
@@ -255,19 +261,23 @@ public class Frontend {
 		MainAPIGenerator apiGenerator = new MainAPIGenerator(workspace);
 		
 		do{
-			System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all): " );
+			System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all) or type \"cancel\": " );
 			parserName = scanner.nextLine();
+			if(parserName.equals("cancel"))
+				return;
 			parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
 		}while(!checkFileExists(parserName));
 		
 		do{
-			System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex): " );
+			System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex) or type \"cancel\": " );
 			scannerName = scanner.nextLine();
+			if(scannerName.equals("cancel"))
+				return;
 			scannerName = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
 		}while(!checkFileExists(scannerName));
 		
 
-		System.out.print( "Provide a name for the output xml generated file: " );
+		System.out.print( "Provide a name for the xml generated file (output file located in <workspace>"+File.separator+"doc): " );
 		outputName = scanner.nextLine();
 
 		apiGenerator.generateDoc(outputName,parserName,scannerName);
