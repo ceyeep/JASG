@@ -9,7 +9,7 @@
  * Contributors:
  *     Cesar Yeep - initial API and implementation
  ******************************************************************************/
-package edu.utep.cs.jasg.tests.specificationGenerator;
+package edu.utep.cs.jasg.tests;
 
 import static org.junit.Assert.*;
 

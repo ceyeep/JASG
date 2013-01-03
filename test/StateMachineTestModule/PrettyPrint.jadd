@@ -1,0 +1,19 @@
+
+
+aspect PrettyPrint {
+  public void StateMachine.pp() {
+    for (Declaration d:getDeclarationList()) {
+      d.pp();
+    }
+  }
+  
+  public void Declaration.pp() {}
+  
+  public void State.pp() {
+    System.out.println("state "+getLabel()+";");
+  }
+  
+  public void Transition.pp() {
+    System.out.println("trans "+getLabel()+":"+getSourceLabel()+"->"+getTargetLabel()+";");
+  }
+}

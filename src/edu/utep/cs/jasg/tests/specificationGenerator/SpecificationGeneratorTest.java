@@ -20,7 +20,7 @@ import org.junit.Test;
  * @author Yeep
  *
  */
-public class MainSpecificationGeneratorTest {
+public class SpecificationGeneratorTest {
 
 	/**
 	 * @throws java.lang.Exception

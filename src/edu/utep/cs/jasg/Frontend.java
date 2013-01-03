@@ -92,6 +92,21 @@ public class Frontend {
 			processOptions(option);
 		}
 	}
+	
+	/** Constructor used for testing purposes. */
+	public Frontend(String workspace, String targetModule){
+
+		//Load configuration properties
+		getProperties();
+		
+		printVersion();
+		
+		setWorkspace(workspace);
+		
+		setTargetModule(targetModule);
+		
+	}
+	
 
 	/** Get properties from properties file. */
 	private void getProperties(){
@@ -255,6 +270,7 @@ public class Frontend {
 		xmlParser.parse(fileName);
 	}
 	
+	//TODO: input files can be identified from module target build.xml
 	/** Create documentation. */
 	public void createParserDoc(){
 		String parserName, scannerName, outputName;
@@ -330,7 +346,6 @@ public class Frontend {
 				"  -exit\t\t\t\t\tExit application\n"
 		);
 	}
-	
 
 	/*
 	// Import a JastAdd module. 
