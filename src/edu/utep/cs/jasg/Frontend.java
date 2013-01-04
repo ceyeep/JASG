@@ -18,8 +18,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import edu.utep.cs.jasg.apiGenerator.MainAPIGenerator;
 import edu.utep.cs.jasg.specificationGenerator.XMLParser;
@@ -29,21 +36,21 @@ public class Frontend {
 	public static Scanner scanner = new Scanner( System.in );
 	private String frameworkNameProperty, versionProperty, urlProperty;
 	private String workspaceProperty, targetModuleProperty;
-	//TODO: change strings to Path to create consistent paths
 	private String workspace, targetModule;
 
+	//TODO: convert string workspace to path
 	public static void main(String[] args){
 		new Frontend();
 	}
-	
+
 	public Frontend(){
 		String option = "";
 
 		//Load configuration properties
 		getProperties();
-		
+
 		printVersion();
-		
+
 		//Check if there exists a workspace property
 		if(!workspaceProperty.equals("")){
 			System.out.println("A previous workspace \"" + workspaceProperty + "\" was identifed");
@@ -52,7 +59,7 @@ public class Frontend {
 			if(workspaceOption.equals("yes"))
 				workspace = workspaceProperty;			
 		}
-		
+
 		//Set workspace
 		if(workspace == null){
 			do{
@@ -60,7 +67,7 @@ public class Frontend {
 				workspace = scanner.nextLine();
 			}while(!setWorkspace(workspace));
 		}
-		
+
 		//Check if there exists a target module property
 		if(!targetModuleProperty.equals("")){
 			System.out.println("A previous target module \"" + targetModuleProperty + "\" was identifed");
@@ -69,7 +76,7 @@ public class Frontend {
 			if(workspaceOption.equals("yes"))
 				targetModule = targetModuleProperty;			
 		}
- 
+
 		//Set target module
 		if(targetModule == null){
 			do{
@@ -77,7 +84,7 @@ public class Frontend {
 				targetModule = scanner.nextLine();
 			}while(!setTargetModule(targetModule));
 		}
-		
+
 		System.out.println("Using workspace \"" + getWorkspace() + "\"");
 		System.out.println("Using  target module \"" + getTargetModule() + "\"");
 
@@ -92,21 +99,21 @@ public class Frontend {
 			processOptions(option);
 		}
 	}
-	
+
 	/** Constructor used for testing purposes. */
 	public Frontend(String workspace, String targetModule){
 
 		//Load configuration properties
 		getProperties();
-		
+
 		printVersion();
-		
+
 		setWorkspace(workspace);
-		
+
 		setTargetModule(targetModule);
-		
+
 	}
-	
+
 
 	/** Get properties from properties file. */
 	private void getProperties(){
@@ -115,10 +122,10 @@ public class Frontend {
 			Properties defaultProps = new Properties();
 			//load a properties file
 			defaultProps.load(new FileInputStream("properties"+File.separator+"JASG.properties"));
-			
+
 			Properties workspaceProps = new Properties(defaultProps);
 			workspaceProps.load(new FileInputStream("properties"+File.separator+"Workspace.properties"));
-			
+
 			Properties targetmoduleProps = new Properties(workspaceProps);
 			targetmoduleProps.load(new FileInputStream("properties"+File.separator+"TargetModule.properties"));
 
@@ -126,9 +133,9 @@ public class Frontend {
 			frameworkNameProperty = targetmoduleProps.getProperty("jasg.JASG");
 			urlProperty = targetmoduleProps.getProperty("jasg.URL");
 			versionProperty  = targetmoduleProps.getProperty("jasg.Version");
-			
+
 			workspaceProperty = targetmoduleProps.getProperty("jasg.Workspace");
-			
+
 			targetModuleProperty = targetmoduleProps.getProperty("jasg.TargetModule");
 
 		} catch (IOException ex) {
@@ -153,19 +160,19 @@ public class Frontend {
 			return true;
 		}
 	}
-	
+
 	/** Store workspace in properties. */
 	private void setWorkspaceProperty(String workspace){
-    	Properties prop = new Properties();
-    	try {
-    		prop.setProperty("jasg.Workspace", workspace);
- 
-    		prop.store(new FileOutputStream("properties"+File.separator+"Workspace.properties"), null);
-    	} catch (IOException ex) {
-    		ex.printStackTrace();
-        }
+		Properties prop = new Properties();
+		try {
+			prop.setProperty("jasg.Workspace", workspace);
+
+			prop.store(new FileOutputStream("properties"+File.separator+"Workspace.properties"), null);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
-	
+
 	/** Set target module path. */
 	public boolean setTargetModule(String targetModule){
 		Path path = Paths.get(targetModule);
@@ -182,18 +189,18 @@ public class Frontend {
 			return true;
 		}
 	}
-	
-	
+
+
 	/** Store targetModule in properties. */
 	private void setTargetModuleProperty(String targetModule){
-    	Properties prop = new Properties();
-    	try {
-    		prop.setProperty("jasg.TargetModule", targetModule);
- 
-    		prop.store(new FileOutputStream("properties"+File.separator+"TargetModule.properties"), null);
-    	} catch (IOException ex) {
-    		ex.printStackTrace();
-        }
+		Properties prop = new Properties();
+		try {
+			prop.setProperty("jasg.TargetModule", targetModule);
+
+			prop.store(new FileOutputStream("properties"+File.separator+"TargetModule.properties"), null);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}	
 
 
@@ -202,7 +209,7 @@ public class Frontend {
 		String[] args = arg.split(" ");
 		switch(args[0]){
 		case "parse":
-			parse(processArgument(args));
+			parseXMLSpec(processArgument(args));
 			break;
 		case "doc":
 			createParserDoc();
@@ -238,10 +245,10 @@ public class Frontend {
 		default: 
 			System.out.println("Invalid option");
 			printOptions();
-		break;
+			break;
 		}
 	}
-	
+
 	/** Process option argument. */
 	private String processArgument(String[] args){
 		String optionArg = "";
@@ -257,9 +264,9 @@ public class Frontend {
 		}
 		return optionArg;
 	}
-	
+
 	/** Parse XML spec. */
-	private void parse(String fileName){
+	private void parseXMLSpec(String fileName){
 		while(!checkFileExists(fileName)){
 			System.out.print( "Provide location of JASG XML specification file or type \"cancel\": " );
 			fileName = scanner.nextLine();
@@ -269,35 +276,46 @@ public class Frontend {
 		XMLParser xmlParser = new XMLParser(workspace);
 		xmlParser.parse(fileName);
 	}
-	
-	//TODO: input files can be identified from module target build.xml
+
 	/** Create documentation. */
 	public void createParserDoc(){
-		String scannerName, parserName, outputName;
 		MainAPIGenerator apiGenerator = new MainAPIGenerator(workspace);
-		
-		do{
-			System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex) or type \"cancel\": " );
-			scannerName = scanner.nextLine();
-			if(scannerName.equals("cancel"))
-				return;
-			scannerName = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
-		}while(!checkFileExists(scannerName));
-		
-		do{
-			System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all) or type \"cancel\": " );
-			parserName = scanner.nextLine();
-			if(parserName.equals("cancel"))
-				return;
-			parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
-		}while(!checkFileExists(parserName));
-		
-		System.out.print( "Provide a name for the xml generated file (output file located in <workspace>"+File.separator+"doc): " );
-		outputName = scanner.nextLine();
+		String[] parseResult = parseBuildFile(targetModule+File.separator+"build.xml");
+		String moduleName = parseResult[0];
+		String scannerName = parseResult[1];
+		String parserName = parseResult[2];
 
-		apiGenerator.generateDoc(outputName,scannerName,parserName);
+		//Check if scanner name property was define in the target module's build.xml
+		if(scannerName.equals("")){
+			do{
+				System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex) or type \"cancel\": " );
+				scannerName = scanner.nextLine();
+				if(scannerName.equals("cancel"))
+					return;
+				scannerName = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
+			}while(!checkFileExists(scannerName));
+		}
+
+		//Check if parser name property was define in the target module's build.xml
+		if(parserName.equals("")){
+			do{
+				System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all) or type \"cancel\": " );
+				parserName = scanner.nextLine();
+				if(parserName.equals("cancel"))
+					return;
+				parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
+			}while(!checkFileExists(parserName));
+		}
+
+		//Check if name attribute was define in the target module's build.xml root
+		if(moduleName.equals("")){
+			System.out.print( "Provide a name for the xml generated file (output file located in <workspace>"+File.separator+"doc): " );
+			moduleName = scanner.nextLine();
+		}
+
+		apiGenerator.generateDoc(moduleName,scannerName,parserName);
 	}
-	
+
 	/** Check if given file exists. */
 	public boolean checkFileExists(String fileName){
 		Path path = Paths.get(fileName);
@@ -316,7 +334,7 @@ public class Frontend {
 	public String getWorkspace(){
 		return workspace;
 	}
-	
+
 	/** Return target module location. */
 	public String getTargetModule(){
 		return targetModule;
@@ -324,73 +342,80 @@ public class Frontend {
 
 	/** Tool information. */
 	public void printVersion() {
-		System.out.println(frameworkNameProperty  + " " + urlProperty + " Version " + versionProperty +"\n");
+		System.out.println("\n"+frameworkNameProperty  + " " + urlProperty + " Version " + versionProperty +"\n");
 	}
 
 	/** Print basic tool usage. */
 	public void printOptions() {
 		System.out.println(
-		"Options:\n" +
-				"  -parse <JASGXMLFile.xml>\t\tParse a JASG specification file\n" +
-				"  -doc\t\t\t\t\tGenerate documentation from AST and parser files\n" +
-				//"  -import <JastAdd module path>\t\tImport a JastAdd module into current workspace\n" +
-				"  -set-workspace <workspace path> \tSet project workspace\n" +
-				"  -get-workspace\t\t\tView current workspace\n" +
-				"  -clean-workspace-property\t\tResets workspace property file\n" +
-				"  -set-target-module <workspace path> \tSet target module\n" +
-				"  -get-target-module\t\t\tView current target module\n" +
-				"  -clean-target-module-property\t\tResets target module property file\n" +
-				"  -help\t\t\t\t\tPrint a synopsis of standard options\n" +
-				"  -version\t\t\t\tPrint version information\n\n" +
-				"  -exit\t\t\t\t\tExit application\n"
-		);
+				"Options:\n" +
+						"  -parse <JASGXMLFile.xml>\t\tParse a JASG specification file\n" +
+						"  -doc\t\t\t\t\tGenerate documentation from AST and parser files\n" +
+						//"  -import <JastAdd module path>\t\tImport a JastAdd module into current workspace\n" +
+						"  -set-workspace <workspace path> \tSet project workspace\n" +
+						"  -get-workspace\t\t\tView current workspace\n" +
+						"  -clean-workspace-property\t\tResets workspace property file\n" +
+						"  -set-target-module <workspace path> \tSet target module\n" +
+						"  -get-target-module\t\t\tView current target module\n" +
+						"  -clean-target-module-property\t\tResets target module property file\n" +
+						"  -help\t\t\t\t\tPrint a synopsis of standard options\n" +
+						"  -version\t\t\t\tPrint version information\n\n" +
+						"  -exit\t\t\t\t\tExit application\n"
+				);
 	}
 
-	/*
-	// Import a JastAdd module. 
-	private void importModule(String modulePath){
-		if(workspace.equals(""))
-			System.out.println("Set a workspace");
-		else
-		{
-			if(!Files.exists(Paths.get(modulePath)))
-				System.out.println("Path " + modulePath + " doesn't exist");
-			else
-			{
-				//Copy main module files
-				copyFiles(modulePath,workspace,"*.{jrag,jadd,flex,xml,ast,parser}");
-				
-				//Copy parser files
-				copyFiles(modulePath+File.separator+"parser",workspace+File.separator+"parser","*.{all,parser}");
-				
-				//Copy scanner files
-				copyFiles(modulePath+File.separator+"scanner",workspace+File.separator+"scanner","*.{flex}");
-				
-				//Copy AST files
-				copyFiles(modulePath+File.separator+"AST",workspace+File.separator+"AST","*.{java}");
-				
-				
+	/** Parse build XML file. Returns a String array with the following content:
+	 * 		[0] = target module name
+	 * 		[1] = target module main scanner specification file
+	 * 		[2] = target module main parser specification file
+	 * */
+	public String[] parseBuildFile(String filePath){
+		String[] result = {"","",""};
+
+		if(Files.exists(Paths.get(filePath))){
+
+			try {
+				SAXBuilder builder = new SAXBuilder();
+				Document doc = (Document) builder.build(filePath);
+				Element root = doc.getRootElement();
+
+				if(root != null){
+					List<Element> propertyList = root.getChildren("property");		
+					Iterator<Element> propertiesIterator = propertyList.iterator();
+					
+					//Get module name
+					String moduleName = root.getAttributeValue("name");
+					if(moduleName != null)
+						result[0] = moduleName;
+
+					//Get specification name properties
+					while(propertiesIterator.hasNext()){
+						Element property = propertiesIterator.next();
+						String propertyName = property.getAttributeValue("name");
+						String propertyValue = property.getAttributeValue("value");
+
+
+						if(propertyName != null){
+							//Get scanner name
+							if(propertyName.equals("scannerName")){
+								if(propertyValue != null)
+									result[1] = propertyValue;
+							}
+							//Get scanner name
+							else if(propertyName.equals("parserName")){
+								if(propertyValue != null)
+									result[2] = propertyValue;
+							}
+						}
+					}
+				}
+			} catch (IOException io) {
+				System.out.println(io.getMessage());
+			} catch (JDOMException jdomex) {
+				System.out.println(jdomex.getMessage());
 			}
 		}
+		return result;
 	}
-	
-	// Copy files. 
-	private void copyFiles(String source, String target, String glob){
 
-		try (DirectoryStream<Path> stream = 
-				Files.newDirectoryStream(Paths.get(source), glob)) {
-			Path targetPath = Paths.get(target);
-			if(!Files.exists(targetPath))
-				Files.createDirectories(targetPath);
-
-			for (Path entry: stream) {
-				Files.copy(entry, targetPath.resolve(entry.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-				System.out.println(entry.getFileName());
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	*/
 }

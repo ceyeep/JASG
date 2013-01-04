@@ -1,0 +1,15 @@
+<project default="build" basedir=".">
+
+	<!-- "package" is the directory where generated files will be stored -->
+	<property name="package" value="AST"/>
+
+	<!-- "lib" is the directory where generators and libraries are located. -->
+	<property name="lib" value="lib"/>
+		
+	<!-- "parserName" is the name of the file containing the concatenation of all .parser files -->
+	<property name="parserName" value="StateMachineParser"/>
+	
+	<!-- "jarName" is the name of the generated jar file -->
+	<property name="jarName" value="StateMachine"/>
+
+</project>

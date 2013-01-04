@@ -1,0 +1,166 @@
+<!-- Targets for working from terminal window:
+       build (default) - generates java files and compiles them
+       test            - runs junit test cases
+       clean           - removes all generated files and class files
+     Targets for working from Eclipse:
+       gen             - generates java files
+       genClean        - removes all generated files and their class files
+ -->
+
+<project name="StateMachine" default="build" basedir=".">
+
+	<!-- "package" is the directory where generated files will be stored -->
+	<property name="package" value="AST"/>
+
+	<!-- "lib" is the directory where generators and libraries are located. -->
+	<property name="lib" value="lib"/>
+	
+	<!-- "scannerName" is the name of the file containing the concatenation of all .flex files -->
+	<property name="scannerName" value="StateMachineScanner"/>
+	
+	<!-- "parserName" is the name of the file containing the concatenation of all .parser files -->
+	<property name="parserName" value="StateMachineParser"/>
+	
+	<!-- "jarName" is the name of the generated jar file -->
+	<property name="jarName" value="StateMachine"/>
+
+	<!-- "jflex" is an ant task class for the scanner generator in JFlex.jar -->
+	<taskdef name="jflex" classname="JFlex.anttask.JFlexTask" classpath="${lib}/JFlex.jar"/>
+
+	<!-- "beaver" is an ant task class for the parser generator in beaver.jar -->
+	<taskdef name="beaver" classname="beaver.comp.run.AntTask" classpath="${lib}/beaver-ant.jar"/>
+	
+	<!-- "jastadd" is an ant task class in jastadd2.jar -->
+	<taskdef name="jastadd" classname="jastadd.JastAddTask" classpath="${lib}/jastadd2.jar" />
+	
+	<target name="build" depends="gen" description="Compile StateMachine">
+		<javac debug="true" nowarn="true" srcdir="."
+			encoding="utf-8"
+			includeantruntime="true">
+			<include name="**/*.java"/>
+			<classpath>
+				<pathelement path="."/>
+				<pathelement path="${lib}/junit.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- set the correct ant executable name, depending on OS -->
+	<condition property="ant.exec.name" value="ant.bat" else="ant">
+		<os family="windows"/>
+	</condition>
+	
+	<!-- generate compiler source files -->
+	<target name="gen" depends="scanner,parser">
+		<exec executable="${ant.exec.name}" failonerror="true">
+			<env key="ANT_OPTS" value="-Xmx512M"/>
+			<arg value="gen.morememory"/>
+		</exec>
+	</target>
+	
+	<target name="gen.morememory">
+		<!-- create AST node types and weave aspect modules -->
+		<!-- run jastadd to generate AST files -->
+		<jastadd package="${package}" rewrite="true" beaver="true" novisitcheck="true" outdir="${basedir}" debug="true">
+			<fileset dir=".">
+				<include name="**/*.ast"/>
+				<include name="**/*.jrag"/>
+				<include name="**/*.jadd"/>
+			</fileset>
+		</jastadd>
+	</target>
+	  
+    <target name="scanner">
+			<!-- compose the scanner -->
+			<concat destfile="scanner/${scannerName}.flex" binary="true" force="false">
+				<filelist dir="scanner">
+				    <file name="preamble.flex"/>
+					<file name="macros.flex"/>
+					<file name="rules.flex" />
+					<file name="postamble.flex" />
+				</filelist>
+			</concat>
+			<!-- generate the scanner -->
+			<jflex file="scanner/${scannerName}.flex" outdir="scanner" nobak="yes"/>
+	</target>
+	
+	<target name="parser">
+		<!-- generate the parser phase 1, create a full .lalr specification from fragments-->
+		<concat destfile="parser/${parserName}.all" binary="true" force="false">
+			<filelist dir="parser">
+				<file name="preamble.parser"/>
+				<file name="statemachine.parser"/>
+			</filelist>	
+		</concat>
+		<!-- generate the parser phase 2, translating .lalr to .beaver -->
+		<java classpath="${lib}/JastAddParser.jar:${lib}/beaver-rt.jar" classname="Main" fork="true">
+			<arg line="parser/${parserName}.all parser/${parserName}.beaver"/>
+		</java>
+		<!-- generate the parser phase 3, translating .beaver to .java -->
+		<beaver file="parser/${parserName}.beaver" terminalNames="yes" compress="no" useSwitch="yes" reportActions="yes"/>
+	</target>
+
+	<!-- Remove generated source files and .class files -->
+	<target name="clean" depends="cleanGen">
+		<!-- Delete all classfiles in dir and recursively in subdirectories -->
+		<delete>
+			<fileset dir="." includes="**/*.class"/>
+		</delete>
+		<delete file="${jarName}.jar"/>
+	</target>
+
+
+	<!-- Remove generated source files -->
+	<target name="cleanGen">
+		<delete dir="${package}"/>
+		<delete dir="doc"/>
+		<delete>
+		  <fileset dir="scanner" includes="${scannerName}.flex"/>
+		  <fileset dir="scanner" includes="${scannerName}.java"/>
+		  <fileset dir="parser" includes="${parserName}.java"/>
+		  <fileset dir="parser" includes="${parserName}.beaver"/>
+		  <fileset dir="parser" includes="${parserName}.all"/>
+		</delete>
+	</target>
+	
+	<target name="jar" depends="build" description="Build binary packages">
+		<jar destfile="${jarName}.jar">
+			<fileset dir="${basedir}" includes="**/*.class" />
+			<manifest>
+				<attribute name="Main-Class" value="tools.Checker"/>
+			</manifest>
+		</jar>
+	</target>	
+
+
+	<!-- test CleanJava checker module -->
+	<target name="test" depends="build">
+		<junit fork="yes" haltonfailure="yes">
+			<classpath>
+				<pathelement path="."/>
+				<fileset dir="lib">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+			<batchtest>
+				<formatter type="brief" usefile="false"/>
+				<fileset dir=".">
+					<include name="testFramework/TestAll.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="doc" depends="gen" description="Build ReRAG documentation">
+		<mkdir dir="doc"/>
+		<javadoc destdir="doc" docletpath="${lib}/RagDoll.jar" doclet="ragdoll.RagDollDoclet">
+			<arg value="-linksource"/>
+			<arg value="-ragroot"/>
+			<arg value="../"/>
+			<packageset dir="." defaultexcludes="yes">
+				<include name="AST"/>
+			</packageset>
+		</javadoc>
+	</target>
+	
+</project>

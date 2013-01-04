@@ -42,6 +42,7 @@ public class FileComparator {
 			}
 		} catch (IOException x) {
 			System.err.format("IOException: %s%n", x);
+			return false;
 		}
 		return true;
 	}

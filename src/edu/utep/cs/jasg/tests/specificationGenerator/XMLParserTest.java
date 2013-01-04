@@ -14,7 +14,9 @@ package edu.utep.cs.jasg.tests.specificationGenerator;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.AfterClass;
@@ -29,29 +31,41 @@ import edu.utep.cs.jasg.testFramework.FileComparator;
 /**
  * Test XMLParser
  * @author Yeep
- *
  */
 public class XMLParserTest {
 
-	private static String workspace = "test"+File.separator+"TestWorkspace";
-	private static String xmlFile = workspace+File.separator+"jasg.xml";
-	private static String xmlFileWithError = workspace+File.separator+"jasgWithError.xml";
-	private static XMLParser xmlParser;
-	private static FileFactory fileFactory = new FileFactory(workspace);
+	private static Path tempWorkspace;
+
 	private static String featureName = "Feature1";
-	private String filePath = workspace+File.separator+featureName;
+	private String fileDestinationPath = tempWorkspace.toString()+File.separator+featureName;
 	
-	private String parserControlFile = "test"+File.separator+"Feature1Sample"+File.separator+"Feature1.parser";
-	private String flexControlFile = "test"+File.separator+"Feature1Sample"+File.separator+"Feature1.flex";
-	private String astControlFile = "test"+File.separator+"Feature1Sample"+File.separator+"Feature1.ast";
-	private String jragControlFile = "test"+File.separator+"Feature1Sample"+File.separator+"Feature1.jrag";
+	private static String testFilesPath = "test"+File.separator+"TestFiles";
+	
+	private static String xmlFile = testFilesPath+File.separator+"jasg.xml";
+	private static String xmlFileWithError = testFilesPath+File.separator+"jasgWithError.xml";
+	private String parserControlFile = testFilesPath+File.separator+"Feature1.parser";
+	private String flexControlFile = testFilesPath+File.separator+"Feature1.flex";
+	private String astControlFile = testFilesPath+File.separator+"Feature1.ast";
+	private String jragControlFile = testFilesPath+File.separator+"Feature1.jrag";
+	
+	private static FileFactory fileFactory;
+	private static XMLParser xmlParser;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		xmlParser = new XMLParser(workspace);
+		//create a temp workspace
+		try {
+			tempWorkspace = Files.createTempDirectory("tempTest");
+			System.out.println(tempWorkspace.toString()+" created");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		fileFactory = new FileFactory(tempWorkspace);
+		xmlParser = new XMLParser(tempWorkspace.toString());
 		xmlParser.parse(xmlFile);
 	}
 	
@@ -61,6 +75,14 @@ public class XMLParserTest {
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		fileFactory.deleteDirectory(featureName);
+		
+		//delete temp workspace
+		try{
+			Files.deleteIfExists(tempWorkspace);
+			System.out.println(tempWorkspace.toString()+ " deleted");
+		}catch (Exception e){//Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+		}
 	}
 	
 	//Tests
@@ -74,10 +96,10 @@ public class XMLParserTest {
 	/** Test specification files are created. */
 	@Test
 	public void testCreatedFiles() {
-		assertTrue(Files.exists(Paths.get(filePath+File.separator+featureName+".parser")));
-		assertTrue(Files.exists(Paths.get(filePath+File.separator+featureName+".flex")));
-		assertTrue(Files.exists(Paths.get(filePath+File.separator+featureName+".ast")));
-		assertTrue(Files.exists(Paths.get(filePath+File.separator+featureName+".jrag")));
+		assertTrue(Files.exists(Paths.get(fileDestinationPath+File.separator+featureName+".parser")));
+		assertTrue(Files.exists(Paths.get(fileDestinationPath+File.separator+featureName+".flex")));
+		assertTrue(Files.exists(Paths.get(fileDestinationPath+File.separator+featureName+".ast")));
+		assertTrue(Files.exists(Paths.get(fileDestinationPath+File.separator+featureName+".jrag")));
 	}
 	
 	/** Test DTD validator. */
@@ -94,11 +116,11 @@ public class XMLParserTest {
 	
 	/** Test if specification files are created correctly compared against a test file. */
 	@Test
-	public void testFileCorrectness() {
-		assertTrue(FileComparator.areEqual(parserControlFile,filePath+File.separator+featureName+".parser"));
-		assertTrue(FileComparator.areEqual(flexControlFile,filePath+File.separator+featureName+".flex"));
-		assertTrue(FileComparator.areEqual(astControlFile,filePath+File.separator+featureName+".ast"));
-		assertTrue(FileComparator.areEqual(jragControlFile,filePath+File.separator+featureName+".jrag"));
+	public void testFileCorrectness()  {
+		assertTrue(FileComparator.areEqual(parserControlFile,fileDestinationPath+File.separator+featureName+".parser"));
+		assertTrue(FileComparator.areEqual(flexControlFile,fileDestinationPath+File.separator+featureName+".flex"));
+		assertTrue(FileComparator.areEqual(astControlFile,fileDestinationPath+File.separator+featureName+".ast"));
+		assertTrue(FileComparator.areEqual(jragControlFile,fileDestinationPath+File.separator+featureName+".jrag"));
 	}
 	
 

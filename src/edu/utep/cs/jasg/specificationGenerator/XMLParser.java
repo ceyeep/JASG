@@ -40,13 +40,12 @@ public class XMLParser {
 
 	//TODO: create sub-parsing of elements (e.g. parsing rules) pass List to methods.
 	/** Parser XML file. */
-	public void parse(String fileName){
-		File file = new File(fileName);
-		if(file.exists() && DOMValidateDTD.validateXML(fileName)){
-			
+	public void parse(String filePath){
+		if(Files.exists(Paths.get(filePath)) 
+				&& DOMValidateDTD.validateXML(filePath)){
 			try {
 				SAXBuilder builder = new SAXBuilder();
-				Document doc = (Document) builder.build(file);
+				Document doc = (Document) builder.build(filePath);
 				Element root = doc.getRootElement();
 	
 				nameSpace = root.getChild("nameSpace").getText();

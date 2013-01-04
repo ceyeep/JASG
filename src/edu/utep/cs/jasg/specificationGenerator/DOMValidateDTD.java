@@ -34,7 +34,7 @@ public class DOMValidateDTD {
 	}
 	
 	/** Validate XML against its DTD. */
-	public static boolean validateXML(String fileName){
+	public static boolean validateXML(String filePath){
 		try{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setValidating(true);
@@ -55,7 +55,7 @@ public class DOMValidateDTD {
 				}
 			});
 
-			Path path = Paths.get(fileName);
+			Path path = Paths.get(filePath);
 			File inputFile = new File(path.toString());
 			builder.parse(inputFile);
 			//Document xmlDocument = builder.parse(inputFile);

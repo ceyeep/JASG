@@ -14,7 +14,9 @@ package edu.utep.cs.jasg.tests.apiGenerator;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.AfterClass;
@@ -32,25 +34,38 @@ import edu.utep.cs.jasg.testFramework.FileComparator;
  */
 public class MainAPIGeneratorTest {
 
-	private static String workspace = "test"+File.separator+"TestWorkspace";
+	private static Path tempWorkspace;
+
 	private static String targetModule = "test"+File.separator+"StateMachineTestModule";
 	private static String testDocName = "StateMachineDoc";
 	private static String scannerName = "StateMachineScanner";
 	private static String parserName = "StateMachineParser";
 	private static String scannerPath = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
 	private static String parserPath = targetModule+File.separator+"parser"+File.separator+parserName+".all";
-	private String filePath = workspace+File.separator+"doc";
-	private String controlFile = "test"+File.separator+"DocSample"+File.separator+"StateMachineDoc.xml";
-	private String controlFileFalse = "test"+File.separator+"DocSample"+File.separator+"StateMachineDocIncorrect.xml";
+	private String filePath = tempWorkspace.toString()+File.separator+"doc";
+	
+	private String controlFile = "test"+File.separator+"TestFiles"+File.separator+"StateMachineDoc.xml";
+	private String controlFileFalse = "test"+File.separator+"TestFiles"+File.separator+"StateMachineDocIncorrect.xml";
 
-	private static FileFactory fileFactory = new FileFactory(workspace);
-	private static MainAPIGenerator apiGenerator = new MainAPIGenerator(workspace);
+	private static FileFactory fileFactory;
+	private static MainAPIGenerator apiGenerator;
 	
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeClass
 	public static void setUpClass() throws Exception {
+		//create a temp workspace
+		try {
+			tempWorkspace = Files.createTempDirectory("tempTest");
+			System.out.println(tempWorkspace.toString()+" created");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		fileFactory = new FileFactory(tempWorkspace);
+		apiGenerator = new MainAPIGenerator(tempWorkspace.toString());
+		
 		apiGenerator.generateDoc(testDocName,scannerPath,parserPath);
 	}
 	
@@ -60,6 +75,14 @@ public class MainAPIGeneratorTest {
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		fileFactory.deleteDirectory("doc");
+		
+		//delete temp workspace
+		try{
+			Files.deleteIfExists(tempWorkspace);
+			System.out.println(tempWorkspace.toString()+ " deleted");
+		}catch (Exception e){//Catch exception if any
+			System.err.println("Error: " + e.getMessage());
+		}
 	}
 	
 	//Tests
