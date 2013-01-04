@@ -40,17 +40,16 @@ public class APIGenerator {
 	
 	private Document doc;
 	private String  outputPath, fileName;
-	//private BeaverSpecificationParser parserModel;
 	private JastAddParserReader parserModel;
 	private JFlexSpecificationParser scannerModel;
 	
 	/** Main constructor, takes the output name of the XML file */
 	public APIGenerator(String outputPath, String fileName, 
-			JastAddParserReader parserModel, JFlexSpecificationParser scannerModel){
+			JFlexSpecificationParser scannerModel, JastAddParserReader parserModel){
 		this.outputPath = outputPath;
 		this.fileName = fileName;
-		this.parserModel = parserModel;
 		this.scannerModel = scannerModel;
+		this.parserModel = parserModel;
 	}
 	
 
@@ -130,13 +129,13 @@ public class APIGenerator {
 	
 	/* Creates a XML file with the parser and scanner APIs using JDom
 	private void createXMLFile(){
-		  try {
+		  try (FileWriter fileWriter = new FileWriter(outputPath+File.separator+fileName+".xml");){
 				// new XMLOutputter().output(doc, System.out);
 				XMLOutputter xmlOutput = new XMLOutputter();
 		 
 				// display nice nice
 				xmlOutput.setFormat(Format.getPrettyFormat());
-				xmlOutput.output(doc, new FileWriter("xml"+File.separator+fileName+".xml"));
+				xmlOutput.output(doc, fileWriter);
 		 
 				System.out.println("File Saved!");
 			  } catch (IOException io) {
@@ -147,7 +146,7 @@ public class APIGenerator {
 	
 	/** Creates a XML file with an XSL reference using JDom */
 	private void createXMLFileWithXSLLink(){
-		try {
+		try (FileWriter fileWriter = new FileWriter(outputPath+File.separator+fileName+".xml");){
 		
 			// new XMLOutputter().output(doc, System.out);
 			XMLOutputter xmlOutput = new XMLOutputter();
@@ -161,15 +160,14 @@ public class APIGenerator {
 			ProcessingInstruction pi = new ProcessingInstruction( "xml-stylesheet",piMap );
 		
 			doc.getContent().add( 0, pi );
-			xmlOutput.output(doc, new FileWriter(outputPath+File.separator+fileName+".xml"));
+			
+			xmlOutput.output(doc, fileWriter);
 			
 			System.out.println("File \"" + outputPath+File.separator+fileName+".xml" + "\" created");
 				
 		} catch (IOException io) {
 			System.err.println("IOException in APIGenerator: " + io.getMessage());
 		}
-		  
-		
 	}
 	
 	/** Creates a HTML file based on the XSL and XML files, using a DOM transformer */

@@ -273,16 +273,8 @@ public class Frontend {
 	//TODO: input files can be identified from module target build.xml
 	/** Create documentation. */
 	public void createParserDoc(){
-		String parserName, scannerName, outputName;
+		String scannerName, parserName, outputName;
 		MainAPIGenerator apiGenerator = new MainAPIGenerator(workspace);
-		
-		do{
-			System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all) or type \"cancel\": " );
-			parserName = scanner.nextLine();
-			if(parserName.equals("cancel"))
-				return;
-			parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
-		}while(!checkFileExists(parserName));
 		
 		do{
 			System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex) or type \"cancel\": " );
@@ -292,11 +284,18 @@ public class Frontend {
 			scannerName = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
 		}while(!checkFileExists(scannerName));
 		
-
+		do{
+			System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all) or type \"cancel\": " );
+			parserName = scanner.nextLine();
+			if(parserName.equals("cancel"))
+				return;
+			parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
+		}while(!checkFileExists(parserName));
+		
 		System.out.print( "Provide a name for the xml generated file (output file located in <workspace>"+File.separator+"doc): " );
 		outputName = scanner.nextLine();
 
-		apiGenerator.generateDoc(outputName,parserName,scannerName);
+		apiGenerator.generateDoc(outputName,scannerName,parserName);
 	}
 	
 	/** Check if given file exists. */

@@ -142,10 +142,8 @@ public class FileFactory {
 		}
 	}
 
-
 	/** Return current workspace. */
 	public String getWorkspace(){
 		return workspace;
 	}
-
 }

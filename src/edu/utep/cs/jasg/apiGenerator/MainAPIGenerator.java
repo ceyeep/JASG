@@ -25,14 +25,14 @@ public class MainAPIGenerator {
 	}
 	
 	
-	public void generateDoc(String fileName, String parserPath, String scannerPath){
+	public void generateDoc(String fileName, String scannerPath, String parserPath){
 		
-		JastAddParserReader parserModel = new JastAddParserReader(parserPath);
 		JFlexSpecificationParser scannerModel = new JFlexSpecificationParser(scannerPath);
+		JastAddParserReader parserModel = new JastAddParserReader(parserPath);
 		fileFactory.createDirectory("doc");
 		fileFactory.copyFile("xml"+File.separator+"stylesheet.xsl", "doc"+File.separator+"stylesheet.xsl");
 		fileFactory.copyFile("xml"+File.separator+"style.css", "doc"+File.separator+"style.css");
-		APIGenerator generator = new APIGenerator(workspace+File.separator+"doc",fileName,parserModel, scannerModel);
+		APIGenerator generator = new APIGenerator(workspace+File.separator+"doc",fileName,scannerModel,parserModel);
 		generator.generateXMLDocument();
 		//generator.executeXSL();
 	}	

@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import edu.utep.cs.jasg.Frontend;
 
+/** Test JASG Frontend. */
 public class FrontendTest {
 	
 	private String workspace = "test"+File.separator+"TestWorkspace";

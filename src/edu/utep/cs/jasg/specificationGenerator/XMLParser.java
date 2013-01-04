@@ -123,5 +123,10 @@ public class XMLParser {
 			e.printStackTrace();
 		}
 	}
+	
+	/** Get project's namespace. */
+	public String getNameSpace(){
+		return nameSpace;
+	}
 
 }
