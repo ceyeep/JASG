@@ -59,6 +59,8 @@ public class FrontendTest {
 		}
 		return property;
 	}
+	
+	//Tests
 
 	@Test
 	public void testWorkspaceProperty() {

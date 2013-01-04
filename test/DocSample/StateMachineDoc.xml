@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="stylesheet.xsl"?>
+<parser_api>
+  <parser_name>StateMachineDoc</parser_name>
+  <terminals>
+    <terminal name="STATE">
+      <symbol_set>
+        <symbol value="&quot;state&quot;" />
+      </symbol_set>
+    </terminal>
+    <terminal name="IDENTIFIER">
+      <symbol_set>
+        <symbol value="{Identifier}" />
+      </symbol_set>
+    </terminal>
+    <terminal name="SEMI">
+      <symbol_set>
+        <symbol value="&quot;;&quot;" />
+      </symbol_set>
+    </terminal>
+    <terminal name="TRANS">
+      <symbol_set>
+        <symbol value="&quot;trans&quot;" />
+      </symbol_set>
+    </terminal>
+    <terminal name="COLON">
+      <symbol_set>
+        <symbol value="&quot;:&quot;" />
+      </symbol_set>
+    </terminal>
+    <terminal name="ARROW">
+      <symbol_set>
+        <symbol value="&quot;-&gt;&quot;" />
+      </symbol_set>
+    </terminal>
+  </terminals>
+  <rule_set>
+    <rule name="declaration" type="Declaration">
+      <rule_definitions>
+        <rule_definition>
+          <definition>STATE.STATE IDENTIFIER.IDENTIFIER SEMI.SEMI {: return new State(IDENTIFIER);:}</definition>
+        </rule_definition>
+        <rule_definition>
+          <definition>TRANS.TRANS IDENTIFIER.ID1 COLON.COLON IDENTIFIER.ID2 ARROW.ARROW IDENTIFIER.ID3 SEMI.SEMI {: return new Transition(ID1, ID2, ID3);:}</definition>
+        </rule_definition>
+      </rule_definitions>
+    </rule>
+    <rule name="declaration_list" type="List">
+      <rule_definitions>
+        <rule_definition>
+          <definition>declaration.declaration {: return new List().add(declaration);:}</definition>
+        </rule_definition>
+        <rule_definition>
+          <definition>declaration_list.declaration_list declaration.declaration {: return declaration_list.add(declaration);:}</definition>
+        </rule_definition>
+      </rule_definitions>
+    </rule>
+    <rule name="statemachine" type="StateMachine">
+      <rule_definitions>
+        <rule_definition>
+          <definition>declaration_list.declaration_list {: return new StateMachine(declaration_list);:}</definition>
+        </rule_definition>
+      </rule_definitions>
+    </rule>
+  </rule_set>
+</parser_api>

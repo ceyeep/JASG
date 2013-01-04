@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import edu.utep.cs.jasg.FileFactory;
 import edu.utep.cs.jasg.apiGenerator.MainAPIGenerator;
+import edu.utep.cs.jasg.testFramework.FileComparator;
 
 /**
  * Test XMLParser
@@ -39,6 +40,8 @@ public class MainAPIGeneratorTest {
 	private static String scannerPath = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
 	private static String parserPath = targetModule+File.separator+"parser"+File.separator+parserName+".all";
 	private String filePath = workspace+File.separator+"doc";
+	private String controlFile = "test"+File.separator+"DocSample"+File.separator+"StateMachineDoc.xml";
+	private String controlFileFalse = "test"+File.separator+"DocSample"+File.separator+"StateMachineDocIncorrect.xml";
 
 	private static FileFactory fileFactory = new FileFactory(workspace);
 	private static MainAPIGenerator apiGenerator = new MainAPIGenerator(workspace);
@@ -59,7 +62,8 @@ public class MainAPIGeneratorTest {
 		fileFactory.deleteDirectory("doc");
 	}
 	
-
+	//Tests
+	
 	/** Test doc file exists. */
 	@Test
 	public void testDocExists() {
@@ -68,5 +72,15 @@ public class MainAPIGeneratorTest {
 		assertTrue(Files.exists(Paths.get(filePath+File.separator+"stylesheet.xsl")));
 	}
 		
+	/** Test if doc file is created correctly compared against a test file. */
+	@Test
+	public void testDocCorrectness() {
+		assertTrue(FileComparator.areEqual(controlFile, filePath+File.separator+testDocName+".xml"));
+	}
 	
+	/** Test that an incorrect sample file, gives a false result. */
+	@Test
+	public void testDocCorrectnessFalsePositive() {
+		assertFalse(FileComparator.areEqual(controlFileFalse, filePath+File.separator+testDocName+".xml"));
+	}
 }

@@ -71,6 +71,8 @@ public class FileFactoryTest {
 			System.err.println("Error: " + e.getMessage());
 		}
 	}
+	
+	//Tests
 
 	/**
 	 * Test creation of a file in specified directory in workspace
