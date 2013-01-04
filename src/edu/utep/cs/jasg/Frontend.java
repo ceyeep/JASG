@@ -285,26 +285,25 @@ public class Frontend {
 		String scannerName = parseResult[1];
 		String parserName = parseResult[2];
 
+		scannerName = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
+		parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
+		
 		//Check if scanner name property was define in the target module's build.xml
-		if(scannerName.equals("")){
-			do{
+		while(!checkFileExists(scannerName)){
 				System.out.print( "Provide name of target module's main scanner file (e.g. scanner"+File.separator+"<Name>.flex) or type \"cancel\": " );
 				scannerName = scanner.nextLine();
 				if(scannerName.equals("cancel"))
 					return;
 				scannerName = targetModule+File.separator+"scanner"+File.separator+scannerName+".flex";
-			}while(!checkFileExists(scannerName));
 		}
 
 		//Check if parser name property was define in the target module's build.xml
-		if(parserName.equals("")){
-			do{
+		while(!checkFileExists(parserName)){
 				System.out.print( "Provide name of target module's main parser file (e.g. parser"+File.separator+"<Name>.all) or type \"cancel\": " );
 				parserName = scanner.nextLine();
 				if(parserName.equals("cancel"))
 					return;
 				parserName = targetModule+File.separator+"parser"+File.separator+parserName+".all";
-			}while(!checkFileExists(parserName));
 		}
 
 		//Check if name attribute was define in the target module's build.xml root
@@ -312,7 +311,7 @@ public class Frontend {
 			System.out.print( "Provide a name for the xml generated file (output file located in <workspace>"+File.separator+"doc): " );
 			moduleName = scanner.nextLine();
 		}
-
+		
 		apiGenerator.generateDoc(moduleName,scannerName,parserName);
 	}
 
